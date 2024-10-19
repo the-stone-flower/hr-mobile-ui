@@ -1,0 +1,1 @@
+{"root":["./src/app.tsx","./src/applicationform.tsx","./src/global.d.ts","./src/main.tsx","./src/vite-env.d.ts","./src/configs/color.ts","./src/configs/host.ts","./src/configs/index.ts","./src/modules/store.ts","./src/modules/list/recruit.ts","./src/modules/options/index.ts","./src/utils/format.ts","./src/utils/index.ts","./src/utils/request.ts"],"errors":true,"version":"5.6.3"}
