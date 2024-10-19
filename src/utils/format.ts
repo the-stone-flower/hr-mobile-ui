@@ -1,14 +1,20 @@
-import dayjs from 'dayjs';
+import dayjs from "dayjs";
 
-export const formatTime = (time: string | number | Date | dayjs.Dayjs, pattern: string = 'YYYY-MM-DD HH:mm:ss') => {
+export const formatTime = (
+  time: string | number | Date | dayjs.Dayjs,
+  pattern: string = "YYYY-MM-DD HH:mm:ss"
+) => {
   if (!time) {
-    return '';
+    return "";
   }
   return dayjs(time).format(pattern);
 };
-export const formatDate = (time: string | number | Date | dayjs.Dayjs, pattern: string = 'YYYY-MM-DD') => {
+export const formatDate = (
+  time: string | number | Date | dayjs.Dayjs,
+  pattern: string = "YYYY-MM-DD"
+) => {
   if (!time) {
-    return '';
+    return "";
   }
   return dayjs(time).format(pattern);
 };
@@ -19,9 +25,9 @@ export const formatMoney = (money: string) => {
 
 export const formatRangeValue = (value: any) => {
   if (Array.isArray(value)) {
-    return value.join(',');
+    return value.join(",");
   }
-  return '';
+  return "";
 };
 
 export const formatFormValue = (form: any) => {
@@ -30,9 +36,12 @@ export const formatFormValue = (form: any) => {
   Object.keys(form).forEach((key) => {
     let value = form[key];
     if (Array.isArray(value)) {
-      value = value.join(',');
+      value = value.join(",");
     }
-    if (value !== '' && value !== undefined && value !== null) {
+    if (value instanceof Date) {
+      value = formatDate(value);
+    }
+    if (value !== "" && value !== undefined && value !== null) {
       newForm[key] = value;
     }
   });
