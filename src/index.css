@@ -1,0 +1,166 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary-color: #4a90e2;
+  --secondary-color: #f5a623;
+  --background-color: #f4f4f4;
+  --text-color: #333333;
+  --border-color: #e0e0e0;
+  --success-color: #28a745;
+  --error-color: #dc3545;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body, html {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  line-height: 1.6;
+  font-weight: 400;
+  color: var(--text-color);
+  background-color: var(--background-color);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  width: 100vw;
+  max-width: 100vw;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  width: 100vw;
+  max-width: 100vw;
+  padding: 20px;
+}
+
+.form-wrapper {
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 600px;
+  overflow: hidden;
+}
+
+.form-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--primary-color);
+  text-align: center;
+  padding: 20px 0;
+  margin-bottom: 0;
+}
+
+.tabs-container {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.adm-tabs {
+  --active-line-color: var(--primary-color);
+  --title-active-color: var(--primary-color);
+}
+
+.adm-tabs-header {
+  border-bottom: 1px solid var(--border-color);
+}
+
+.adm-tabs-tab {
+  font-size: 14px;
+}
+
+.app-form {
+  padding: 20px;
+}
+
+.adm-form-item {
+  margin-bottom: 20px;
+}
+
+.adm-input, .adm-text-area {
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 10px;
+  font-size: 16px;
+}
+
+.adm-radio, .adm-checkbox {
+  font-size: 16px;
+}
+
+.adm-button {
+  border-radius: 8px;
+  font-size: 18px;
+  font-weight: 500;
+  padding: 12px 20px;
+}
+
+.adm-form-item-label {
+  font-weight: 500;
+  margin-bottom: 5px;
+}
+
+.adm-picker {
+  width: 100%;
+}
+
+.adm-picker-view {
+  --height: 240px;
+}
+
+.adm-date-picker-view {
+  --height: 240px;
+}
+
+.adm-form-footer {
+  margin-top: 30px;
+}
+
+/* 响应式设计 */
+@media (max-width: 480px) {
+  .form-wrapper {
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .app-container {
+    padding: 0;
+  }
+
+  .app-form {
+    padding: 16px;
+  }
+
+  .form-title {
+    font-size: 20px;
+    padding: 16px 0;
+  }
+}
+
+/* 自定义滚动条样式 */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
