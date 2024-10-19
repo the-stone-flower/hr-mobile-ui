@@ -12,7 +12,7 @@ import {
 } from "antd-mobile";
 import { useAppDispatch, useAppSelector } from "./modules/store";
 import { fetchOptions, optionsSelector } from "./modules/options/index";
-// import './ApplicationForm.css';
+import dayjs from 'dayjs';
 
 const ApplicationForm: React.FC = () => {
   const [form] = Form.useForm();
@@ -59,10 +59,17 @@ const ApplicationForm: React.FC = () => {
         name="employment"
         label="应聘岗位"
         rules={[{ required: true, message: "请选择应聘岗位" }]}
+        trigger="onConfirm"
+        onClick={(e, pickerRef) => {
+          pickerRef.current?.open()
+        }}
       >
-        {allOptions.employment_options?.options?.[0].label}
-        <Picker columns={[allOptions.employment_options?.options || []]}>
-          {(value) => (value ? value[0]?.label : "请选择应聘岗位")}
+        <Picker
+          columns={[allOptions.employment_options?.options || []]}
+        >
+          {value =>
+            value ? value[0]?.label : '请选择应聘岗位'
+          }
         </Picker>
       </Form.Item>
       <Form.Item name="gender" label="性别">
@@ -71,50 +78,108 @@ const ApplicationForm: React.FC = () => {
           <Radio value="girl">女</Radio>
         </Radio.Group>
       </Form.Item>
-      <Form.Item name="birthday" label="出生日期">
+      <Form.Item 
+        name="birthday" 
+        label="出生日期"
+        trigger="onConfirm"
+        onClick={(e, datePickerRef) => {
+          datePickerRef.current?.open()
+        }}
+      >
         <DatePicker>
-          {(value) => (value ? value.toDateString() : "请选择出生日期")}
+          {value =>
+            value ? dayjs(value).format('YYYY-MM-DD') : '请选择出生日期'
+          }
         </DatePicker>
       </Form.Item>
       <Form.Item name="age" label="年龄">
         <Input type="number" placeholder="请输入年龄" />
       </Form.Item>
-      <Form.Item name="nation" label="民族">
-        <Picker columns={[allOptions.nation_options?.options || []]}>
-          {(value) => (value ? value[0]?.label : "请选择民族")}
+      <Form.Item 
+        name="nation" 
+        label="民族"
+        trigger="onConfirm"
+        onClick={(e, pickerRef) => {
+          pickerRef.current?.open()
+        }}
+      >
+        <Picker
+          columns={[allOptions.nation_options?.options || []]}
+        >
+          {value =>
+            value ? value[0]?.label : '请选择民族'
+          }
         </Picker>
       </Form.Item>
       <Form.Item name="native_place" label="籍贯">
         <Input placeholder="请输入籍贯" />
       </Form.Item>
-      <Form.Item name="political" label="政治面貌">
-        <Picker columns={[allOptions.political_options?.options || []]}>
-          {(value) => (value ? value[0]?.label : "请选择政治面貌")}
+      <Form.Item 
+        name="political" 
+        label="政治面貌"
+        trigger="onConfirm"
+        onClick={(e, pickerRef) => {
+          pickerRef.current?.open()
+        }}
+      >
+        <Picker
+          columns={[allOptions.political_options?.options || []]}
+        >
+          {value =>
+            value ? value[0]?.label : '请选择政治面貌'
+          }
         </Picker>
       </Form.Item>
-      <Form.Item name="join_party_date" label="入党时间">
+      <Form.Item 
+        name="join_party_date" 
+        label="入党时间"
+        trigger="onConfirm"
+        onClick={(e, datePickerRef) => {
+          datePickerRef.current?.open()
+        }}
+      >
         <DatePicker>
-          {(value) => (value ? value.toDateString() : "请选择入党时间")}
+          {value =>
+            value ? dayjs(value).format('YYYY-MM-DD') : '请选择入党时间'
+          }
         </DatePicker>
       </Form.Item>
-      <Form.Item name="marital_status" label="婚姻状况">
-        <Picker columns={[allOptions.marital_options?.options || []]}>
-          {(value) => (value ? value[0]?.label : "请选择婚姻状况")}
+      <Form.Item 
+        name="marital_status" 
+        label="婚姻状况"
+        trigger="onConfirm"
+        onClick={(e, pickerRef) => {
+          pickerRef.current?.open()
+        }}
+      >
+        <Picker
+          columns={[allOptions.marital_options?.options || []]}
+        >
+          {value =>
+            value ? value[0]?.label : '请选择婚姻状况'
+          }
         </Picker>
       </Form.Item>
       <Form.Item name="is_veteran" label="是否退役军人">
         <Radio.Group>
           <Radio value="true">是</Radio>
-          <Radio value="false" className="ml-4">
-            否
-          </Radio>
+          <Radio value="false">否</Radio>
         </Radio.Group>
       </Form.Item>
-      <Form.Item name="physical_disability" label="残疾类型">
+      <Form.Item 
+        name="physical_disability" 
+        label="残疾类型"
+        trigger="onConfirm"
+        onClick={(e, pickerRef) => {
+          pickerRef.current?.open()
+        }}
+      >
         <Picker
           columns={[allOptions.physical_disability_options?.options || []]}
         >
-          {(value) => (value ? value[0]?.label : "请选择残疾类型")}
+          {value =>
+            value ? value[0]?.label : '请选择残疾类型'
+          }
         </Picker>
       </Form.Item>
     </>
@@ -158,9 +223,13 @@ const ApplicationForm: React.FC = () => {
         name="education"
         label="学历"
         rules={[{ required: true, message: "请选择学历" }]}
+        trigger="onConfirm"
+        onClick={(e, pickerRef) => {
+          pickerRef.current?.open()
+        }}
       >
         <Picker columns={[allOptions.education_options?.options || []]}>
-          {(value) => (value ? value[0]?.label : "请选择学历")}
+          {value => value ? value[0]?.label : "请选择学历"}
         </Picker>
       </Form.Item>
       <Form.Item
@@ -170,17 +239,33 @@ const ApplicationForm: React.FC = () => {
       >
         <Input placeholder="请输入毕业学校" />
       </Form.Item>
-      <Form.Item name="degree" label="学位">
+      <Form.Item 
+        name="degree" 
+        label="学位"
+        trigger="onConfirm"
+        onClick={(e, pickerRef) => {
+          pickerRef.current?.open()
+        }}
+      >
         <Picker columns={[allOptions.degree_options?.options || []]}>
-          {(value) => (value ? value[0]?.label : "请选择学位")}
+          {value => value ? value[0]?.label : "请选择学位"}
         </Picker>
       </Form.Item>
       <Form.Item name="major" label="专业">
         <Input placeholder="请输入专业" />
       </Form.Item>
-      <Form.Item name="graduated_date" label="毕业时间">
+      <Form.Item 
+        name="graduated_date" 
+        label="毕业时间"
+        trigger="onConfirm"
+        onClick={(e, datePickerRef) => {
+          datePickerRef.current?.open()
+        }}
+      >
         <DatePicker>
-          {(value) => (value ? value.toDateString() : "请选择毕业时间")}
+          {value =>
+            value ? dayjs(value).format('YYYY-MM-DD') : '请选择毕业时间'
+          }
         </DatePicker>
       </Form.Item>
     </>
@@ -199,14 +284,29 @@ const ApplicationForm: React.FC = () => {
         name="start_date"
         label="开始日期"
         rules={[{ required: true, message: "请选择开始日期" }]}
+        trigger="onConfirm"
+        onClick={(e, datePickerRef) => {
+          datePickerRef.current?.open()
+        }}
       >
         <DatePicker>
-          {(value) => (value ? value.toDateString() : "请选择开始日期")}
+          {value =>
+            value ? dayjs(value).format('YYYY-MM-DD') : '请选择开始日期'
+          }
         </DatePicker>
       </Form.Item>
-      <Form.Item name="end_date" label="结束日期">
+      <Form.Item 
+        name="end_date" 
+        label="结束日期"
+        trigger="onConfirm"
+        onClick={(e, datePickerRef) => {
+          datePickerRef.current?.open()
+        }}
+      >
         <DatePicker>
-          {(value) => (value ? value.toDateString() : "请选择结束日期")}
+          {value =>
+            value ? dayjs(value).format('YYYY-MM-DD') : '请选择结束日期'
+          }
         </DatePicker>
       </Form.Item>
       <Form.Item name="department" label="部门">
@@ -240,9 +340,13 @@ const ApplicationForm: React.FC = () => {
         name="relation"
         label="与本人关系"
         rules={[{ required: true, message: "请选择与本人关系" }]}
+        trigger="onConfirm"
+        onClick={(e, pickerRef) => {
+          pickerRef.current?.open()
+        }}
       >
         <Picker columns={[allOptions.relation_options?.options || []]}>
-          {(value) => (value ? value[0]?.label : "请选择与本人关系")}
+          {value => value ? value[0]?.label : "请选择与本人关系"}
         </Picker>
       </Form.Item>
       <Form.Item
@@ -258,9 +362,18 @@ const ApplicationForm: React.FC = () => {
       <Form.Item name="work_desc" label="职业">
         <Input placeholder="请输入职业" />
       </Form.Item>
-      <Form.Item name="birthday" label="出生年月">
+      <Form.Item 
+        name="birthday" 
+        label="出生年月"
+        trigger="onConfirm"
+        onClick={(e, datePickerRef) => {
+          datePickerRef.current?.open()
+        }}
+      >
         <DatePicker>
-          {(value) => (value ? value.toDateString() : "请选择出生年月")}
+          {value =>
+            value ? dayjs(value).format('YYYY-MM-DD') : '请选择出生年月'
+          }
         </DatePicker>
       </Form.Item>
       <Form.Item name="work_type" label="工作单位">
@@ -297,7 +410,6 @@ const ApplicationForm: React.FC = () => {
               提交
             </Button>
           }
-          className="app-form"
         >
           <div className="tab-content">
             {activeKey === "1" && renderBasicInfo()}
