@@ -2,7 +2,7 @@ import React from "react";
 import { Provider } from "react-redux";
 import store from "./modules/store";
 import jiayouzhan from "./assets/jiayouzhan.png";
-import ApplicationForm from "./ApplicationForm";
+import ApplicationForm from "components/ApplicationForm/ApplicationForm";
 
 const App: React.FC = () => {
   return (

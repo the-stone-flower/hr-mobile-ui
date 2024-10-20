@@ -15,6 +15,9 @@ export interface IRecruit {
   created_at: string;
   updated_at: string;
   auth_url?: string; // 假设认证 URL 是可选的
+  edu_info_list: any;
+  workexp_info_list: any;
+  social_info_list: any;
 }
 
 interface IInitialState {
@@ -77,35 +80,50 @@ export const getList = createAsyncThunk(
 
 export const addListItem = createAsyncThunk(
   `${namespace}/addListItem`,
-  async (item: IRecruitFilterParams, { dispatch }) => {
-    const payload = formatFormValue(item);
+  async (item: IRecruitFilterParams, {}) => {
+    const { edu_info_list, workexp_info_list, social_info_list, ...other } =
+      item;
+    const otherForm = formatFormValue(other);
+    const eduList = edu_info_list.map((item: any) => formatFormValue(item));
+    const workList = workexp_info_list.map((item: any) =>
+      formatFormValue(item)
+    );
+    const socialList = social_info_list.map((item: any) =>
+      formatFormValue(item)
+    );
+    const payload = {
+      ...otherForm,
+      edu_info_list: eduList,
+      workexp_info_list: workList,
+      social_info_list: socialList,
+    };
     const { data } = await request.post(
       `/recruit/ext/create_from_mobile/`,
       payload
     );
-    await dispatch(getList({}));
+    // await dispatch(getList({}));
     return data;
   }
 );
 
 export const deleteListItem = createAsyncThunk(
   `${namespace}/deleteListItem`,
-  async (id: number, { dispatch }) => {
+  async (id: number, {}) => {
     await request.delete(`/recruit/ext/create_from_mobile/${id}/`);
-    await dispatch(getList({}));
+    // await dispatch(getList({}));
     return id;
   }
 );
 
 export const editListItem = createAsyncThunk(
   `${namespace}/editListItem`,
-  async (item: IRecruitFilterParams, { dispatch }) => {
+  async (item: IRecruitFilterParams, {}) => {
     const { id, ...payload } = item;
     const { data } = await request.patch(
       `/recruit/ext/create_from_mobile/${id}/`,
       payload
     );
-    await dispatch(getList({}));
+    // await dispatch(getList({}));
     return data;
   }
 );
