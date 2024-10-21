@@ -36,6 +36,13 @@ const ApplicationForm: React.FC = () => {
     }
   };
 
+  const handlePrevious = () => {
+    const currentIndex = tabConfigs.findIndex((config) => config.key === activeKey);
+    if (currentIndex > 0) {
+      setActiveKey(tabConfigs[currentIndex - 1].key);
+    }
+  };
+
   const onFinish = async () => {
     try {
       const values = await form.validateFields();
@@ -69,16 +76,30 @@ const ApplicationForm: React.FC = () => {
     }
   };
 
-  const renderNextButton = () => {
+  const renderNavigationButtons = () => {
     const currentIndex = tabConfigs.findIndex((config) => config.key === activeKey);
-    if (currentIndex < tabConfigs.length - 1 && currentIndex < 2) {
-      return (
-        <Button block type="submit" color="primary" onClick={handleNext}>
-          下一步
-        </Button>
-      );
-    }
-    return null;
+    const isFirstTab = currentIndex === 0;
+    const isLastTab = currentIndex === tabConfigs.length - 1;
+
+    return (
+      <div className="flex justify-between mt-6 mb-10 mx-4 gap-4">
+        {!isFirstTab && (
+          <Button className="flex-grow" onClick={handlePrevious}>
+            上一步
+          </Button>
+        )}
+        {!isLastTab && (
+          <Button className="flex-grow" onClick={handleNext}>
+            下一步
+          </Button>
+        )}
+        {isLastTab && (
+          <Button className="flex-grow" color="primary" onClick={onFinish}>
+            提交
+          </Button>
+        )}
+      </div>
+    );
   };
 
   return (
@@ -90,23 +111,11 @@ const ApplicationForm: React.FC = () => {
             {tabConfigs.map(({ key, title, component: TabComponent }) => (
               <Tabs.Tab title={title} key={key}>
                 <TabComponent form={form} allOptions={allOptions} />
-                {renderNextButton()}
               </Tabs.Tab>
             ))}
           </Tabs>
+          {renderNavigationButtons()}
         </Form>
-        {activeKey === "5" && (
-          <Button
-            block
-            className="mb-10"
-            type="submit"
-            color="primary"
-            size="large"
-            onClick={onFinish}
-          >
-            提交
-          </Button>
-        )}
       </div>
     </div>
   );
