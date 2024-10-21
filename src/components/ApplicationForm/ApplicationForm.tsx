@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Form, Button, Toast, Tabs } from "antd-mobile";
+import { Form, Button, Toast, Tabs, SpinLoading } from "antd-mobile";
 import { useAppDispatch, useAppSelector } from "modules/store";
 import { fetchOptions, optionsSelector } from "modules/options/index";
 import { addListItem } from "modules/list/recruit";
@@ -8,6 +8,7 @@ import { tabConfigs } from "./config";
 const ApplicationForm: React.FC = () => {
   const [form] = Form.useForm();
   const [activeKey, setActiveKey] = useState("1");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const dispatch = useAppDispatch();
   const { allOptions } = useAppSelector(optionsSelector);
 
@@ -45,6 +46,7 @@ const ApplicationForm: React.FC = () => {
 
   const onFinish = async () => {
     try {
+      setIsSubmitting(true);
       const values = await form.validateFields();
       console.log("Raw Form values:", values);
 
@@ -73,6 +75,8 @@ const ApplicationForm: React.FC = () => {
         icon: "fail",
         content: "请填写所有必填字段！",
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -94,8 +98,14 @@ const ApplicationForm: React.FC = () => {
           </Button>
         )}
         {isLastTab && (
-          <Button className="flex-grow" color="primary" onClick={onFinish}>
-            提交
+          <Button 
+            color="primary" 
+            onClick={onFinish} 
+            loading={isSubmitting}
+            loadingText="提交中"
+            className="flex-grow"
+          >
+            {isSubmitting ? <SpinLoading /> : "提交"}
           </Button>
         )}
       </div>
