@@ -26,16 +26,17 @@ const defaultWork: WorkRecord = {
 };
 
 const WorkExperience: React.FC<TabProps> = ({ form }) => {
-  const [workList, setWorkList] = useState<WorkRecord[]>([defaultWork]);
+  const [workList, setWorkList] = useState<WorkRecord[]>([]);
 
   const addWork = () => {
-    setWorkList([...workList, defaultWork]);
+    const newList = [...workList, defaultWork];
+    setWorkList(newList);
   };
 
   const removeWork = (index: number) => {
     const newList = workList.filter((_, i) => i !== index);
     setWorkList(newList);
-    form.setFieldsValue({ workexp_info_list: newList });
+    // form.setFieldsValue({ workexp_info_list: newList });
   };
 
   return (
@@ -106,17 +107,15 @@ const WorkExperience: React.FC<TabProps> = ({ form }) => {
           >
             <Input placeholder="请输入证明人联系方式" />
           </Form.Item>
-          {index > 0 && (
-            <div className="flex justify-end mb-4">
-              <Button
-                color="danger"
-                size="small"
-                onClick={() => removeWork(index)}
-              >
-                删除此工作经历
-              </Button>
-            </div>
-          )}
+          <div className="flex justify-end mb-4">
+            <Button
+              color="danger"
+              size="small"
+              onClick={() => removeWork(index)}
+            >
+              删除此工作经历
+            </Button>
+          </div>
         </div>
       ))}
       <div className="flex justify-center mt-2">

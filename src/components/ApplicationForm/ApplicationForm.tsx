@@ -15,7 +15,7 @@ const ApplicationForm: React.FC = () => {
     dispatch(fetchOptions("create_ext_user_options"));
   }, [dispatch]);
 
-  const handleTabChange = async (key: string) => {
+  const handleNext = async () => {
     try {
       const currentTabConfig = tabConfigs.find(
         (config) => config.key === activeKey
@@ -23,7 +23,10 @@ const ApplicationForm: React.FC = () => {
       if (currentTabConfig) {
         await form.validateFields(currentTabConfig.fields);
       }
-      setActiveKey(key);
+      const currentIndex = tabConfigs.findIndex((config) => config.key === activeKey);
+      if (currentIndex < tabConfigs.length - 1) {
+        setActiveKey(tabConfigs[currentIndex + 1].key);
+      }
     } catch (errorInfo) {
       console.log("Validation Failed:", errorInfo);
       Toast.show({
@@ -35,11 +38,9 @@ const ApplicationForm: React.FC = () => {
 
   const onFinish = async () => {
     try {
-      // 验证所有字段
       const values = await form.validateFields();
       console.log("Raw Form values:", values);
 
-      // 处理 edu_info_list, workexp_info_list, social_info_list
       const processedValues = {
         ...values,
         edu_info_list: values.edu_info_list || [],
@@ -47,7 +48,6 @@ const ApplicationForm: React.FC = () => {
         social_info_list: values.social_info_list || [],
       };
 
-      // 确保 physical_disability 字段正确处理
       if (processedValues.physical_disability) {
         processedValues.physical_disability =
           processedValues.physical_disability[1];
@@ -55,7 +55,6 @@ const ApplicationForm: React.FC = () => {
 
       console.log("Processed Form values:", processedValues);
 
-      // 发送到后端
       await dispatch(addListItem(processedValues)).unwrap();
       Toast.show({
         icon: "success",
@@ -69,15 +68,29 @@ const ApplicationForm: React.FC = () => {
       });
     }
   };
+
+  const renderNextButton = () => {
+    const currentIndex = tabConfigs.findIndex((config) => config.key === activeKey);
+    if (currentIndex < tabConfigs.length - 1 && currentIndex < 2) {
+      return (
+        <Button block type="submit" color="primary" onClick={handleNext}>
+          下一步
+        </Button>
+      );
+    }
+    return null;
+  };
+
   return (
     <div className="app-container">
       <div className="form-wrapper mb-4">
         <h1 className="form-title">应聘登记表</h1>
         <Form form={form}>
-          <Tabs activeKey={activeKey} onChange={handleTabChange}>
+          <Tabs activeKey={activeKey} onChange={setActiveKey}>
             {tabConfigs.map(({ key, title, component: TabComponent }) => (
               <Tabs.Tab title={title} key={key}>
                 <TabComponent form={form} allOptions={allOptions} />
+                {renderNextButton()}
               </Tabs.Tab>
             ))}
           </Tabs>

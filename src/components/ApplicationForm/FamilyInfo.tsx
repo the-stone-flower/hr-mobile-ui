@@ -26,16 +26,17 @@ const defaultFamily: FamilyRecord = {
 };
 
 const FamilyInfo: React.FC<TabProps> = ({ form, allOptions }) => {
-  const [familyList, setFamilyList] = useState<FamilyRecord[]>([defaultFamily]);
+  const [familyList, setFamilyList] = useState<FamilyRecord[]>([]);
 
   const addFamily = () => {
-    setFamilyList([...familyList, defaultFamily]);
+    const newList = [...familyList, defaultFamily];
+    setFamilyList(newList);
   };
 
   const removeFamily = (index: number) => {
     const newList = familyList.filter((_, i) => i !== index);
     setFamilyList(newList);
-    form.setFieldsValue({ social_info_list: newList });
+    // form.setFieldsValue({ social_info_list: newList });
   };
 
   return (
@@ -114,17 +115,15 @@ const FamilyInfo: React.FC<TabProps> = ({ form, allOptions }) => {
               <Radio value="false">否</Radio>
             </Radio.Group>
           </Form.Item>
-          {index > 0 && (
-            <div className="flex justify-end mb-4">
-              <Button
-                color="danger"
-                size="small"
-                onClick={() => removeFamily(index)}
-              >
-                删除此家庭成员
-              </Button>
-            </div>
-          )}
+          <div className="flex justify-end mb-4">
+            <Button
+              color="danger"
+              size="small"
+              onClick={() => removeFamily(index)}
+            >
+              删除此家庭成员
+            </Button>
+          </div>
         </div>
       ))}
       <div className="flex justify-center mt-2">

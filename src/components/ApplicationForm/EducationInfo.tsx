@@ -20,18 +20,17 @@ const defaultEducation: EducationRecord = {
 };
 
 const EducationInfo: React.FC<TabProps> = ({ form, allOptions }) => {
-  const [educationList, setEducationList] = useState<EducationRecord[]>([
-    defaultEducation,
-  ]);
+  const [educationList, setEducationList] = useState<EducationRecord[]>([]);
 
   const addEducation = () => {
-    setEducationList([...educationList, defaultEducation]);
+    const newList = [...educationList, defaultEducation];
+    setEducationList(newList);
   };
 
   const removeEducation = (index: number) => {
     const newList = educationList.filter((_, i) => i !== index);
     setEducationList(newList);
-    form.setFieldsValue({ edu_info_list: newList });
+    // form.setFieldsValue({ edu_info_list: newList });
   };
 
   return (
@@ -88,17 +87,15 @@ const EducationInfo: React.FC<TabProps> = ({ form, allOptions }) => {
               }
             </DatePicker>
           </Form.Item>
-          {index > 0 && (
-            <div className="flex justify-end mb-4">
-              <Button
-                color="danger"
-                size="small"
-                onClick={() => removeEducation(index)}
-              >
-                删除此教育经历
-              </Button>
-            </div>
-          )}
+          <div className="flex justify-end mb-4">
+            <Button
+              color="danger"
+              size="small"
+              onClick={() => removeEducation(index)}
+            >
+              删除此教育经历
+            </Button>
+          </div>
         </div>
       ))}
       <div className="flex justify-center mt-2">
