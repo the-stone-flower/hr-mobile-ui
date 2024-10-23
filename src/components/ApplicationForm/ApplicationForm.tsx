@@ -5,6 +5,7 @@ import { fetchOptions, optionsSelector } from "modules/options/index";
 import { addListItem, getListItemFromId } from "modules/list/recruit";
 import { tabConfigs } from "./config";
 import { CheckCircleFill } from "antd-mobile-icons";
+import { filterNullValues } from "utils/index";
 
 const ApplicationForm: React.FC = () => {
   const [form] = Form.useForm();
@@ -25,60 +26,8 @@ const ApplicationForm: React.FC = () => {
           getListItemFromId({ id_number: idNumber })
         ).unwrap();
 
-        if (res && res.id) {
-          // 工具函数：过滤掉对象中的 null 和空值
-          const filterNullValues = (obj: any) => {
-            const result: any = {};
-            Object.entries(obj).forEach(([key, value]) => {
-              // 如果是数组，递归处理数组中的每个对象
-              if (Array.isArray(value)) {
-                const filteredArray = value
-                  .map((item) =>
-                    typeof item === "object" ? filterNullValues(item) : item
-                  )
-                  .filter((item) => Object.keys(item).length > 0);
-                if (filteredArray.length > 0) {
-                  result[key] = filteredArray;
-                }
-              }
-              // 处理 Picker 组件的值，确保是数组格式
-              else if (
-                [
-                  "nation",
-                  "political",
-                  "marital_status",
-                  "employment",
-                  "degree",
-                ].includes(key) &&
-                value
-              ) {
-                result[key] = [value];
-              }
-              // 如果是有效值，则保留
-              else if (value !== null && value !== undefined && value !== "") {
-                result[key] = value;
-              }
-            });
-            return result;
-          };
-
-          // 设置表单数据，只设置有效值
+        if (res && res) {
           const processedData = filterNullValues(res);
-
-          // 处理教育经历列表中的 Picker 值
-          if (processedData.edu_info_list) {
-            processedData.edu_info_list = processedData.edu_info_list.map(
-              (edu: any) => ({
-                ...edu,
-                education: edu.education ? [edu.education] : undefined,
-                degree: edu.degree ? [edu.degree] : undefined,
-                education_type: edu.education_type
-                  ? [edu.education_type]
-                  : undefined,
-              })
-            );
-          }
-
           form.setFieldsValue(processedData);
 
           Toast.show({
@@ -90,9 +39,8 @@ const ApplicationForm: React.FC = () => {
         console.log("未找到历史数据");
       }
     },
-    [dispatch, form]
+    [dispatch]
   );
-
   const handleNext = async () => {
     try {
       const currentTabConfig = tabConfigs.find(

@@ -84,18 +84,20 @@ export const addListItem = createAsyncThunk(
     const { edu_info_list, workexp_info_list, social_info_list, ...other } =
       item;
     const otherForm = formatFormValue(other);
-    const eduList = edu_info_list.map((item: any) => formatFormValue(item));
-    const workList = workexp_info_list.map((item: any) =>
-      formatFormValue(item)
-    );
-    const socialList = social_info_list.map((item: any) =>
-      formatFormValue(item)
-    );
+    const eduList = Array.isArray(edu_info_list)
+      ? edu_info_list
+      : Object.values(edu_info_list);
+    const workList = Array.isArray(workexp_info_list)
+      ? workexp_info_list
+      : Object.values(workexp_info_list);
+    const socialList = Array.isArray(social_info_list)
+      ? social_info_list
+      : Object.values(social_info_list);
     const payload = {
       ...otherForm,
-      edu_info_list: eduList,
-      workexp_info_list: workList,
-      social_info_list: socialList,
+      edu_info_list: eduList.map((item: any) => formatFormValue(item)),
+      workexp_info_list: workList.map((item: any) => formatFormValue(item)),
+      social_info_list: socialList.map((item: any) => formatFormValue(item)),
     };
     const { data } = await request.post(
       `/recruit/ext/create_from_mobile/`,
@@ -142,7 +144,10 @@ export const getListItem = createAsyncThunk(
 export const getListItemFromId = createAsyncThunk(
   `${namespace}/getListItem`,
   async (payload: any, { dispatch }) => {
-    const { data } = await request.post("/recruit/ext/detail_from_mobile/", payload);
+    const { data } = await request.post(
+      "/recruit/ext/detail_from_mobile/",
+      payload
+    );
     return data;
   }
 );
