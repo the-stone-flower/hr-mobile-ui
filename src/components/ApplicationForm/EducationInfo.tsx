@@ -174,7 +174,11 @@ const EducationInfo: React.FC<TabProps> = ({ form, allOptions }) => {
               datePickerRef.current?.open();
             }}
           >
-            <DatePicker>
+            <DatePicker
+              min={new Date(1924, 0, 1)}
+              max={new Date()}
+              precision="day"
+            >
               {(value) =>
                 getDateDisplayText(
                   value,

@@ -68,7 +68,11 @@ const WorkExperience: React.FC<TabProps> = ({ form }) => {
               datePickerRef.current?.open();
             }}
           >
-            <DatePicker>
+            <DatePicker
+              min={new Date(1924, 0, 1)}
+              max={new Date()}
+              precision="day"
+            >
               {(value) =>
                 getDateDisplayText(
                   value,
@@ -87,7 +91,11 @@ const WorkExperience: React.FC<TabProps> = ({ form }) => {
               datePickerRef.current?.open();
             }}
           >
-            <DatePicker>
+            <DatePicker
+              min={new Date(1924, 0, 1)}
+              max={new Date()}
+              precision="day"
+            >
               {(value) =>
                 getDateDisplayText(
                   value,
