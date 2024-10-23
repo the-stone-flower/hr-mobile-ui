@@ -6,7 +6,7 @@ import dayjs from "dayjs";
 interface FamilyRecord {
   relative_name: string;
   relation: string;
-  is_cnpc_staff: string;
+  is_client_staff: string;
   occupation: string;
   birthday: string;
   work_unit: string;
@@ -107,7 +107,7 @@ const FamilyInfo: React.FC<TabProps> = ({ form, allOptions }) => {
           </Form.Item>
 
           <Form.Item
-            name={["social_info_list", String(index), "is_cnpc_staff"]}
+            name={["social_info_list", String(index), "is_client_staff"]}
             label="中石油员工"
             rules={[{ required: true, message: "请选择是否为中石油员工" }]}
           >

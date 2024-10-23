@@ -123,7 +123,7 @@ export function filterNullValues(obj: any) {
           }
 
           // 处理布尔值字段
-          if (["is_cnpc_staff", "is_emergency_contact"].includes(itemKey)) {
+          if (["is_client_staff", "is_emergency_contact"].includes(itemKey)) {
             processedItem[itemKey] = String(itemValue);
             return;
           }

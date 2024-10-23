@@ -78,6 +78,18 @@ const ContactInfo: React.FC<TabProps> = ({ form, allOptions }) => {
     }
   }, [form.getFieldValue("emergency_address")]);
 
+    // 监听现居地址变化
+    useEffect(() => {
+      const postal_address = form.getFieldValue("postal_address");
+      if (postal_address) {
+        const parsed = parseAddress(postal_address);
+        if (parsed) {
+          setPostalRegion(parsed.region);
+          setPostalLocation(parsed.location);
+        }
+      }
+    }, [form.getFieldValue("postal_address")]);
+
   // 处理现居地址的省市区选择
   const handleFamilyRegionChange = (
     val: PickerValue[],
