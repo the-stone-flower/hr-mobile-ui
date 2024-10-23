@@ -105,7 +105,7 @@ const EducationInfo: React.FC<TabProps> = ({ form, allOptions }) => {
           <Form.Item
             name={["edu_info_list", String(index), "education_type"]}
             label="学历类型"
-            rules={[{ required: true, message: "请选择学历类型" }]}
+            rules={[{ required: false, message: "请选择学历类型" }]}
             trigger="onConfirm"
             onClick={(e, pickerRef) => {
               pickerRef.current?.open();
