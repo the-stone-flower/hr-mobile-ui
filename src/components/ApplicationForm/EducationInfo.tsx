@@ -77,28 +77,7 @@ const EducationInfo: React.FC<TabProps> = ({ form, allOptions }) => {
       {localEduList.map((_: any, index: number) => (
         <div key={index}>
           <h4 className="font-bold ml-2 my-2">教育经历 {index + 1}</h4>
-          <Form.Item
-            name={["edu_info_list", String(index), "education_type"]}
-            label="学历类型"
-            rules={[{ required: true, message: "请选择学历类型" }]}
-            trigger="onConfirm"
-            onClick={(e, pickerRef) => {
-              pickerRef.current?.open();
-            }}
-          >
-            <Picker
-              columns={[allOptions.education_type_options?.options || []]}
-            >
-              {(value) =>
-                getPickerDisplayText(
-                  value,
-                  allOptions.education_type_options?.options || [],
-                  "请选择学历类型",
-                  ["edu_info_list", String(index), "education_type"]
-                )
-              }
-            </Picker>
-          </Form.Item>
+
 
           <Form.Item
             name={["edu_info_list", String(index), "education"]}
@@ -119,6 +98,29 @@ const EducationInfo: React.FC<TabProps> = ({ form, allOptions }) => {
                     String(index),
                     "education",
                   ])
+              }
+            </Picker>
+          </Form.Item>
+
+          <Form.Item
+            name={["edu_info_list", String(index), "education_type"]}
+            label="学历类型"
+            rules={[{ required: true, message: "请选择学历类型" }]}
+            trigger="onConfirm"
+            onClick={(e, pickerRef) => {
+              pickerRef.current?.open();
+            }}
+          >
+            <Picker
+              columns={[allOptions.education_type_options?.options || []]}
+            >
+              {(value) =>
+                getPickerDisplayText(
+                  value,
+                  allOptions.education_type_options?.options || [],
+                  "请选择学历类型",
+                  ["edu_info_list", String(index), "education_type"]
+                )
               }
             </Picker>
           </Form.Item>
