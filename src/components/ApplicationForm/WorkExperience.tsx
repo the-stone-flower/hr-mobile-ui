@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Form, Input, DatePicker, TextArea, Button } from "antd-mobile";
 import { TabProps } from "./types";
 import dayjs from "dayjs";
@@ -17,22 +17,22 @@ interface WorkRecord {
 const WorkExperience: React.FC<TabProps> = ({ form }) => {
   const [localWorkList, setLocalWorkList] = useState<WorkRecord[]>([]);
 
-  // 使用表单值来控制工作经历列表的显示，如果没有表单值则使用本地状态
-  const getWorkList = () => {
+  // 监听表单值变化，设置初始值
+  useEffect(() => {
     const formWorkList = form.getFieldValue("workexp_info_list");
-    return formWorkList || localWorkList;
-  };
+    if (formWorkList && Array.isArray(formWorkList)) {
+      setLocalWorkList(formWorkList);
+    }
+  }, [form.getFieldValue("workexp_info_list")]);
 
   // 处理添加工作经历
   const handleAddWork = () => {
-    const newList = [...getWorkList(), {}];
-    setLocalWorkList(newList);
+    setLocalWorkList([...localWorkList, {}]);
   };
 
   // 处理删除工作经历
   const handleRemoveWork = (index: number) => {
-    const currentList = getWorkList();
-    const newList = currentList.filter((_: any, i: number) => i !== index);
+    const newList = localWorkList.filter((_: any, i: number) => i !== index);
     setLocalWorkList(newList);
   };
 
@@ -48,7 +48,7 @@ const WorkExperience: React.FC<TabProps> = ({ form }) => {
 
   return (
     <>
-      {getWorkList().map((_: any, index: number) => (
+      {localWorkList.map((_: any, index: number) => (
         <div key={index}>
           <h4 className="font-bold ml-2 my-2">工作经历 {index + 1}</h4>
           <Form.Item

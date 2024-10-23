@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Form, Input, Picker, DatePicker, Button } from "antd-mobile";
 import { TabProps } from "./types";
 import dayjs from "dayjs";
@@ -20,29 +20,36 @@ interface PickerOption {
 
 const EducationInfo: React.FC<TabProps> = ({ form, allOptions }) => {
   const [localEduList, setLocalEduList] = useState<EducationRecord[]>([]);
+  const [educationOptions, setEducationOptions] = useState<PickerOption[]>([]);
 
-  // 使用表单值来控制教育经历列表的显示，如果没有表单值则使用本地状态
-  const getEducationList = () => {
+  // 监听表单值变化，设置初始值
+  useEffect(() => {
     const formEduList = form.getFieldValue("edu_info_list");
-    if (formEduList && formEduList.length) {
-      
+    if (formEduList && Array.isArray(formEduList)) {
+      setLocalEduList(formEduList);
     }
-    return formEduList || localEduList;
-  };
+  }, [form.getFieldValue("edu_info_list")]);
 
   // 处理添加教育经历
   const handleAddEducation = () => {
-    const newList = [...getEducationList(), {}];
-
-    setLocalEduList(newList);
+    setLocalEduList([...localEduList, {}]);
   };
 
   // 处理删除教育经历
   const handleRemoveEducation = (index: number) => {
-    const currentList = getEducationList();
-    const newList = currentList.filter((_: any, i: number) => i !== index);
+    const newList = localEduList.filter((_: any, i: number) => i !== index);
     setLocalEduList(newList);
   };
+
+  // 处理学历类型变化
+  const handleEducationTypeChange = (index: number, val: any) => {
+    const selectedType = allOptions.education_info_options?.options.find(
+      (option: any) => option.value === val[0]
+    );
+
+    setEducationOptions(selectedType?.children || []);
+  };
+
   // 辅助函数：获取选择器显示文本
   const getPickerDisplayText = (
     value: any,
@@ -74,25 +81,6 @@ const EducationInfo: React.FC<TabProps> = ({ form, allOptions }) => {
     return dateValue ? dayjs(dateValue).format("YYYY-MM-DD") : defaultText;
   };
 
-  // 获取学历选项
-  const getEducationOptions = (index: number) => {
-    const educationType = form.getFieldValue([
-      "edu_info_list",
-      String(index),
-      "education_type",
-    ]);
-    if (educationType) {
-      const eduType = Array.isArray(educationType)
-        ? educationType[0]
-        : educationType;
-      const selectedType = allOptions.education_info_options?.options.find(
-        (option: any) => option.value == eduType
-      );
-      return selectedType?.children || [];
-    }
-    return [];
-  };
-
   return (
     <>
       {localEduList.map((_: any, index: number) => (
@@ -109,6 +97,7 @@ const EducationInfo: React.FC<TabProps> = ({ form, allOptions }) => {
           >
             <Picker
               columns={[allOptions.education_info_options?.options || []]}
+              onConfirm={(val) => handleEducationTypeChange(index, val)}
             >
               {(value) =>
                 getPickerDisplayText(
@@ -131,14 +120,13 @@ const EducationInfo: React.FC<TabProps> = ({ form, allOptions }) => {
             }}
             dependencies={[["edu_info_list", String(index), "education_type"]]}
           >
-            <Picker columns={[getEducationOptions(index)]}>
+            <Picker columns={[educationOptions]}>
               {(value) =>
-                getPickerDisplayText(
-                  value,
-                  getEducationOptions(index),
-                  "请选择学历",
-                  ["edu_info_list", String(index), "education"]
-                )
+                getPickerDisplayText(value, educationOptions, "请选择学历", [
+                  "edu_info_list",
+                  String(index),
+                  "education",
+                ])
               }
             </Picker>
           </Form.Item>

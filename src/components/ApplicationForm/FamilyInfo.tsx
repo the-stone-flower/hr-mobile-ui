@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Form, Input, Radio, Picker, DatePicker, Button } from "antd-mobile";
 import { TabProps } from "./types";
 import dayjs from "dayjs";
@@ -22,22 +22,22 @@ interface PickerOption {
 const FamilyInfo: React.FC<TabProps> = ({ form, allOptions }) => {
   const [localFamilyList, setLocalFamilyList] = useState<FamilyRecord[]>([]);
 
-  // 使用表单值来控制家庭成员列表的显示，如果没有表单值则使用本地状态
-  const getFamilyList = () => {
+  // 监听表单值变化，设置初始值
+  useEffect(() => {
     const formFamilyList = form.getFieldValue("social_info_list");
-    return formFamilyList || localFamilyList;
-  };
+    if (formFamilyList && Array.isArray(formFamilyList)) {
+      setLocalFamilyList(formFamilyList);
+    }
+  }, [form.getFieldValue("social_info_list")]);
 
   // 处理添加家庭成员
   const handleAddFamily = () => {
-    const newList = [...getFamilyList(), {}];
-    setLocalFamilyList(newList);
+    setLocalFamilyList([...localFamilyList, {}]);
   };
 
   // 处理删除家庭成员
   const handleRemoveFamily = (index: number) => {
-    const currentList = getFamilyList();
-    const newList = currentList.filter((_: any, i: number) => i !== index);
+    const newList = localFamilyList.filter((_: any, i: number) => i !== index);
     setLocalFamilyList(newList);
   };
 
@@ -74,7 +74,7 @@ const FamilyInfo: React.FC<TabProps> = ({ form, allOptions }) => {
 
   return (
     <>
-      {getFamilyList().map((_: any, index: number) => (
+      {localFamilyList.map((_: any, index: number) => (
         <div key={index}>
           <h4 className="font-bold ml-2 my-2">家庭成员 {index + 1}</h4>
           <Form.Item
