@@ -161,7 +161,7 @@ const FamilyInfo: React.FC<TabProps> = ({ form, allOptions }) => {
             <Input placeholder="请输入联系电话" />
           </Form.Item>
 
-          <Form.Item
+          {/* <Form.Item
             name={["social_info_list", String(index), "is_emergency_contact"]}
             label="紧急联系人"
           >
@@ -169,7 +169,7 @@ const FamilyInfo: React.FC<TabProps> = ({ form, allOptions }) => {
               <Radio value="true">是</Radio>
               <Radio value="false">否</Radio>
             </Radio.Group>
-          </Form.Item>
+          </Form.Item> */}
 
           <div className="flex justify-end mb-4">
             <Button
