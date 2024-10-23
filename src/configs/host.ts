@@ -5,8 +5,7 @@ export default {
   },
   development: {
     // 开发环境接口请求
-    API: 'http://152.136.143.14:8000',
-    // API: 'http://localhost:8000',
+    API: import.meta.env.VITE_API_HOST,
   },
   test: {
     // 测试环境接口地址
