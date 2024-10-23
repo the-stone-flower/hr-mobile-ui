@@ -25,16 +25,19 @@ const ApplicationForm: React.FC = () => {
         const res = await dispatch(
           getListItemFromId({ id_number: idNumber })
         ).unwrap();
-        if (res && res.data) {
+
+        if (res && res.id) {
           // 设置表单数据
-          form.setFieldsValue(res.data);
+          form.setFieldsValue(res);
+
           Toast.show({
             icon: "success",
             content: "已自动填充历史数据",
           });
         }
       } catch (error) {
-        console.error("获取历史数据失败:", error);
+        // 这里不再显示错误提示，静默失败
+        console.log("未找到历史数据");
       }
     },
     [dispatch, form]

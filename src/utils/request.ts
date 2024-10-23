@@ -57,6 +57,9 @@ instance.interceptors.response.use(
         content: `请求出错，${JSON.stringify(response.data)}`,
       });
     } else {
+      if (response.config.url.includes("recruit/ext/detail_from_mobile")) {
+        return Promise.reject(error);
+      }
       Toast.show({
         icon: "fail",
         content: "请求出错, 请联系管理员",

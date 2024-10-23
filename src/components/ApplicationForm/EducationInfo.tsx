@@ -4,6 +4,7 @@ import { TabProps } from "./types";
 import dayjs from "dayjs";
 
 interface EducationRecord {
+  education_type: string;
   education: string;
   graduated: string;
   degree: string;
@@ -12,6 +13,7 @@ interface EducationRecord {
 }
 
 const defaultEducation: EducationRecord = {
+  education_type: "",
   education: "",
   graduated: "",
   degree: "",
@@ -21,14 +23,28 @@ const defaultEducation: EducationRecord = {
 
 const EducationInfo: React.FC<TabProps> = ({ form, allOptions }) => {
   const [educationList, setEducationList] = useState<EducationRecord[]>([]);
+  const [educationOptions, setEducationOptions] = useState<{ [key: number]: any[] }>({});
 
   // 监听表单中教育经历列表的变化
   useEffect(() => {
     const edu_info_list = form.getFieldValue('edu_info_list');
     if (edu_info_list && edu_info_list.length > 0) {
       setEducationList(edu_info_list);
+      // 初始化每个记录的教育选项
+      const options: { [key: number]: any[] } = {};
+      edu_info_list.forEach((edu: any, index: number) => {
+        if (edu.education_type) {
+          const selectedType = allOptions.education_info_options?.options.find(
+            (option: any) => option.value === edu.education_type
+          );
+          if (selectedType?.children) {
+            options[index] = selectedType.children;
+          }
+        }
+      });
+      setEducationOptions(options);
     }
-  }, [form]);
+  }, [form, allOptions.education_info_options?.options]);
 
   const addEducation = () => {
     const newList = [...educationList, defaultEducation];
@@ -38,10 +54,29 @@ const EducationInfo: React.FC<TabProps> = ({ form, allOptions }) => {
   const removeEducation = (index: number) => {
     const newList = educationList.filter((_, i) => i !== index);
     setEducationList(newList);
-    // // 更新表单数据
-    // const edu_info_list = form.getFieldValue('edu_info_list') || [];
-    // edu_info_list.splice(index, 1);
-    // form.setFieldsValue({ edu_info_list });
+    // 移除对应的教育选项
+    const newOptions = { ...educationOptions };
+    delete newOptions[index];
+    setEducationOptions(newOptions);
+  };
+
+  // 处理学历类型变化
+  const handleEducationTypeChange = (index: number, val: any) => {
+    const selectedType = allOptions.education_info_options?.options.find(
+      (option: any) => option.value === val[0]
+    );
+
+    if (selectedType?.children) {
+      setEducationOptions(prev => ({
+        ...prev,
+        [index]: selectedType.children
+      }));
+    } else {
+      setEducationOptions(prev => ({
+        ...prev,
+        [index]: []
+      }));
+    }
   };
 
   return (
@@ -49,6 +84,23 @@ const EducationInfo: React.FC<TabProps> = ({ form, allOptions }) => {
       {educationList.map((_, index) => (
         <div key={index}>
           <h4 className="font-bold ml-2 my-2">教育经历 {index + 1}</h4>
+          <Form.Item
+            name={["edu_info_list", index, "education_type"]}
+            label="学历类型"
+            rules={[{ required: true, message: "请选择学历类型" }]}
+            trigger="onConfirm"
+            onClick={(e, pickerRef) => {
+              pickerRef.current?.open();
+            }}
+          >
+            <Picker 
+              columns={[allOptions.education_info_options?.options || []]}
+              onConfirm={(val) => handleEducationTypeChange(index, val)}
+            >
+              {(value) => (value ? value[0]?.label : "请选择学历类型")}
+            </Picker>
+          </Form.Item>
+
           <Form.Item
             name={["edu_info_list", index, "education"]}
             label="学历"
@@ -58,10 +110,11 @@ const EducationInfo: React.FC<TabProps> = ({ form, allOptions }) => {
               pickerRef.current?.open();
             }}
           >
-            <Picker columns={[allOptions.education_options?.options || []]}>
+            <Picker columns={[educationOptions[index] || []]}>
               {(value) => (value ? value[0]?.label : "请选择学历")}
             </Picker>
           </Form.Item>
+
           <Form.Item
             name={["edu_info_list", index, "graduated"]}
             label="毕业学校"
@@ -69,6 +122,7 @@ const EducationInfo: React.FC<TabProps> = ({ form, allOptions }) => {
           >
             <Input placeholder="请输入毕业学校" />
           </Form.Item>
+
           <Form.Item
             name={["edu_info_list", index, "degree"]}
             label="学位"
@@ -81,12 +135,14 @@ const EducationInfo: React.FC<TabProps> = ({ form, allOptions }) => {
               {(value) => (value ? value[0]?.label : "请选择学位")}
             </Picker>
           </Form.Item>
+
           <Form.Item 
             name={["edu_info_list", index, "major"]} 
             label="专业"
           >
             <Input placeholder="请输入专业" />
           </Form.Item>
+
           <Form.Item
             name={["edu_info_list", index, "graduated_date"]}
             label="毕业时间"
@@ -101,6 +157,7 @@ const EducationInfo: React.FC<TabProps> = ({ form, allOptions }) => {
               }
             </DatePicker>
           </Form.Item>
+
           <div className="flex justify-end mb-4">
             <Button
               color="danger"

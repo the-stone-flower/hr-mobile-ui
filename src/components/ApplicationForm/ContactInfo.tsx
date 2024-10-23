@@ -6,9 +6,9 @@ import type {
 } from "antd-mobile/es/components/picker";
 import { TabProps } from "./types";
 
-// 地址解析正则表达式
+// 更新后的地址正则表达式
 const ADDRESS_REGEX =
-  /^(北京市|天津市|上海市|重庆市|[\u4e00-\u9fa5]{2,}省|[\u4e00-\u9fa5]{2,}自治区)((?!市)[\u4e00-\u9fa5]{2,}区|[\u4e00-\u9fa5]{2,}市|[\u4e00-\u9fa5]{2,}县)?([\u4e00-\u9fa5]{2,}区|[\u4e00-\u9fa5]{2,}县)?(.+)?$/;
+  /(?<province>[^省]+省|[^自治区]+自治区|.+市)(?<city>[^自治州]+自治州|.+区划|[^市]+市|.+区)?(?<county>[^市]+市|[^县]+县|[^旗]+旗|.+区)?(?<town>[^区]+区|.+镇)?(?<village>.*)/;
 
 const ContactInfo: React.FC<TabProps> = ({ form, allOptions }) => {
   // 控制省市区选择器的显示
@@ -21,30 +21,30 @@ const ContactInfo: React.FC<TabProps> = ({ form, allOptions }) => {
   const [emergencyRegion, setEmergencyRegion] = useState<string[]>([]);
   const [emergencyLocation, setEmergencyLocation] = useState("");
 
-  const areaData = allOptions.work_place_options?.options;
-
-  // 判断是否是直辖市
-  const isDirectCity = (province: string) => {
-    return ["北京市", "上海市", "天津市", "重庆市"].includes(province);
-  };
+  const areaData = allOptions?.work_place_options?.options || [];
 
   // 地址解析函数
   const parseAddress = (address: string) => {
     const match = address.match(ADDRESS_REGEX);
-    if (match) {
-      const [, province, city, district, detail] = match;
+    if (match?.groups) {
+      const { province, city, county, town, village } = match.groups;
 
-      if (isDirectCity(province)) {
-        // 直辖市返回两级地址
+      // 判断是否是直辖市
+      const isDirectCity = ["北京市", "上海市", "天津市", "重庆市"].includes(
+        province
+      );
+
+      if (isDirectCity) {
+        // 直辖市返回两级地址：市-区
         return {
-          region: [province, city],
-          location: detail?.trim() || "",
+          region: [province, city || county || ""],
+          location: [town, village].filter(Boolean).join(""),
         };
       } else {
-        // 普通省份返回三级地址
+        // 普通省份返回三级地址：省-市-区/县
         return {
-          region: [province, city, district],
-          location: detail?.trim() || "",
+          region: [province, city || "", county || ""].filter(Boolean),
+          location: [town, village].filter(Boolean).join(""),
         };
       }
     }
@@ -81,16 +81,18 @@ const ContactInfo: React.FC<TabProps> = ({ form, allOptions }) => {
     extend: PickerValueExtend
   ) => {
     setFamilyRegion(val as string[]);
+    const address = val.join("");
     form.setFieldsValue({
-      family_address: (val as string[]).join("") + familyLocation,
+      family_address: address + familyLocation,
     });
   };
 
   // 处理现居地址的详细地址输入
   const handleFamilyLocationChange = (value: string) => {
     setFamilyLocation(value);
+    const address = familyRegion.join("");
     form.setFieldsValue({
-      family_address: familyRegion.join("") + value,
+      family_address: address + value,
     });
   };
 
@@ -100,16 +102,18 @@ const ContactInfo: React.FC<TabProps> = ({ form, allOptions }) => {
     extend: PickerValueExtend
   ) => {
     setEmergencyRegion(val as string[]);
+    const address = val.join("");
     form.setFieldsValue({
-      emergency_address: (val as string[]).join("") + emergencyLocation,
+      emergency_address: address + emergencyLocation,
     });
   };
 
   // 处理紧急联系人地址的详细地址输入
   const handleEmergencyLocationChange = (value: string) => {
     setEmergencyLocation(value);
+    const address = emergencyRegion.join("");
     form.setFieldsValue({
-      emergency_address: emergencyRegion.join("") + value,
+      emergency_address: address + value,
     });
   };
 
@@ -140,11 +144,12 @@ const ContactInfo: React.FC<TabProps> = ({ form, allOptions }) => {
           value={familyRegion}
           onConfirm={handleFamilyRegionChange}
         >
-          {(items) => {
+          {(items, name) => {
             if (items.every((item) => item === null)) {
               return "请选择省/市/区";
             }
-            return items.map((item) => item?.label ?? "").join("/");
+            const selectedAddress = familyRegion.join("/");
+            return selectedAddress || "请选择省/市/区";
           }}
         </CascadePicker>
       </Form.Item>
@@ -204,7 +209,8 @@ const ContactInfo: React.FC<TabProps> = ({ form, allOptions }) => {
             if (items.every((item) => item === null)) {
               return "请选择省/市/区";
             }
-            return items.map((item) => item?.label ?? "").join("/");
+            const selectedAddress = emergencyRegion.join("/");
+            return selectedAddress || "请选择省/市/区";
           }}
         </CascadePicker>
       </Form.Item>
