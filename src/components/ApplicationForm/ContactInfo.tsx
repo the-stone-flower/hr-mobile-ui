@@ -14,12 +14,15 @@ const ContactInfo: React.FC<TabProps> = ({ form, allOptions }) => {
   // 控制省市区选择器的显示
   const [familyVisible, setFamilyVisible] = useState(false);
   const [emergencyVisible, setEmergencyVisible] = useState(false);
+  const [postalVisible, setPostalVisible] = useState(false);
 
   // 前端管理的地址字段
   const [familyRegion, setFamilyRegion] = useState<string[]>([]);
   const [familyLocation, setFamilyLocation] = useState("");
   const [emergencyRegion, setEmergencyRegion] = useState<string[]>([]);
   const [emergencyLocation, setEmergencyLocation] = useState("");
+  const [postalRegion, setPostalRegion] = useState<string[]>([]);
+  const [postalLocation, setPostalLocation] = useState("");
 
   const areaData = allOptions?.work_place_options?.options || [];
 
@@ -117,6 +120,24 @@ const ContactInfo: React.FC<TabProps> = ({ form, allOptions }) => {
     });
   };
 
+  // 处理固定通信地址的省市区选择
+  const handlePostalRegionChange = (val: PickerValue[], extend: PickerValueExtend) => {
+    setPostalRegion(val as string[]);
+    const address = val.join("");
+    form.setFieldsValue({
+      postal_address: address + postalLocation,
+    });
+  }
+
+  // 处理固定通信地址的详细地址输入
+  const handlePostalLocationChange = (value: string) => {
+    setPostalLocation(value);
+    const address = postalRegion.join("");
+    form.setFieldsValue({
+      postal_address: address + value
+    });
+  }
+
   return (
     <>
       <Form.Item name="email" label="电子邮箱">
@@ -172,7 +193,44 @@ const ContactInfo: React.FC<TabProps> = ({ form, allOptions }) => {
         <Input placeholder="请输入邮政编码" />
       </Form.Item>
 
-      <Form.Item name="postal_address" label="固定通信地址">
+      {/* 固定通信地址 - 省市区选择 */}
+      <Form.Item
+        label="固定通信地址"
+        trigger="onConfirm"
+        onClick={() => {
+          setPostalVisible(true);
+        }}
+      >
+        <CascadePicker
+          options={areaData}
+          visible={postalVisible}
+          onClose={() => {
+            setPostalVisible(false);
+          }}
+          value={postalRegion}
+          onConfirm={handlePostalRegionChange}
+        >
+          {(items, name) => {
+            if (items.every((item) => item === null)) {
+              return "请选择省/市/区";
+            }
+            const selectedAddress = postalRegion.join("/");
+            return selectedAddress || "请选择省/市/区";
+          }}
+        </CascadePicker>
+      </Form.Item>
+
+      {/* 固定通信地址 - 详细地址 */}
+      <Form.Item label="详细地址">
+        <TextArea
+          placeholder="请输入详细地址（如街道、楼牌号等）"
+          value={postalLocation}
+          onChange={handlePostalLocationChange}
+        />
+      </Form.Item>
+
+      {/* 隐藏固定通信地址 */}
+      <Form.Item name="postal_address" label="固定通信地址" hidden>
         <TextArea placeholder="请输入固定通信地址" />
       </Form.Item>
 
