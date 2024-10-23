@@ -108,12 +108,12 @@ const FamilyInfo: React.FC<TabProps> = ({ form, allOptions }) => {
 
           <Form.Item
             name={["social_info_list", String(index), "is_client_staff"]}
-            label="中石油员工"
-            rules={[{ required: true, message: "请选择是否为中石油员工" }]}
+            label="是否甲方单位员工"
+            rules={[{ required: true, message: "请选择是否为是否甲方单位员工" }]}
           >
             <Radio.Group>
-              <Radio value="true">是</Radio>
-              <Radio value="false">否</Radio>
+              <Radio value="true" className="mt-2">是</Radio>
+              <Radio value="false" className="mt-2">否</Radio>
             </Radio.Group>
           </Form.Item>
 

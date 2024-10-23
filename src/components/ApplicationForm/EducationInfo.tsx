@@ -9,7 +9,7 @@ interface EducationRecord {
   graduated: string;
   degree: string;
   major: string;
-  graduated_date: string;
+  graduate_date: string;
 }
 
 interface PickerOption {
@@ -161,7 +161,7 @@ const EducationInfo: React.FC<TabProps> = ({ form, allOptions }) => {
           </Form.Item>
 
           <Form.Item
-            name={["edu_info_list", String(index), "graduated_date"]}
+            name={["edu_info_list", String(index), "graduate_date"]}
             label="毕业时间"
             trigger="onConfirm"
             onClick={(e, datePickerRef) => {
@@ -176,7 +176,7 @@ const EducationInfo: React.FC<TabProps> = ({ form, allOptions }) => {
               {(value) =>
                 getDateDisplayText(
                   value,
-                  ["edu_info_list", String(index), "graduated_date"],
+                  ["edu_info_list", String(index), "graduate_date"],
                   "请选择毕业时间"
                 )
               }

@@ -8,7 +8,7 @@ interface WorkRecord {
   start_date: string;
   end_date: string;
   department: string;
-  job: string;
+  position: string;
   resp_achv: string;
   referee: string;
   referee_contact: string;
@@ -114,7 +114,7 @@ const WorkExperience: React.FC<TabProps> = ({ form }) => {
           </Form.Item>
 
           <Form.Item
-            name={["workexp_info_list", String(index), "job"]}
+            name={["workexp_info_list", String(index), "position"]}
             label="职位"
           >
             <Input placeholder="请输入职位" />

@@ -128,7 +128,7 @@ const BasicInfo: React.FC<TabProps> = ({
       <Form.Item name="gender" label="性别">
         <Radio.Group>
           {allOptions.gender_options?.options?.map((option: any) => (
-            <Radio key={option.value} value={option.value}>
+            <Radio key={option.value} value={option.value} className="mt-2">
               {option.label}
             </Radio>
           ))}
@@ -233,8 +233,8 @@ const BasicInfo: React.FC<TabProps> = ({
 
       <Form.Item name="is_veteran" label="是否退役军人">
         <Radio.Group>
-          <Radio value="true">是</Radio>
-          <Radio value="false">否</Radio>
+          <Radio value="true" className="mt-2">是</Radio>
+          <Radio value="false" className="mt-2">否</Radio>
         </Radio.Group>
       </Form.Item>
 

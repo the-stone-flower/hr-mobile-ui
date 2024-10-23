@@ -60,10 +60,10 @@ export function filterNullValues(obj: any) {
       result[key] = value.map((item) => {
         const processedItem: any = {};
         Object.entries(item).forEach(([itemKey, itemValue]: [any, any]) => {
-          if (!itemValue) return;
+          if (!itemValue && itemValue !== false) return;
 
           // 处理日期
-          if (itemKey === "graduated_date") {
+          if (itemKey === "graduate_date") {
             processedItem[itemKey] = new Date(itemValue);
             return;
           }
@@ -87,7 +87,7 @@ export function filterNullValues(obj: any) {
       result[key] = value.map((item) => {
         const processedItem: any = {};
         Object.entries(item).forEach(([itemKey, itemValue]: [any, any]) => {
-          if (!itemValue) return;
+          if (!itemValue && itemValue !== false) return;
 
           // 处理日期字段
           if (["start_date", "end_date"].includes(itemKey)) {
@@ -108,7 +108,7 @@ export function filterNullValues(obj: any) {
       result[key] = value.map((item) => {
         const processedItem: any = {};
         Object.entries(item).forEach(([itemKey, itemValue]: [any, any]) => {
-          if (!itemValue) return;
+          if (!itemValue && itemValue !== false) return;
 
           // 处理日期字段
           if (itemKey === "birthday") {
