@@ -16,4 +16,8 @@ export default {
     // 正式环境接口地址
     API: 'http://hrapi.bshxc.com',
   },
+  production: {
+    // 正式环境接口地址
+    API: 'http://hrapi.bshxc.com',
+  },
 };

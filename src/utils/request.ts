@@ -54,7 +54,7 @@ instance.interceptors.response.use(
     } else if (response.status === 400) {
       Toast.show({
         icon: "fail",
-        content: "请求出错，${JSON.stringify(response.data)}",
+        content: `请求出错，${JSON.stringify(response.data)}`,
       });
     } else {
       Toast.show({

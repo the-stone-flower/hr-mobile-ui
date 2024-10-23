@@ -2,7 +2,8 @@ import { FormInstance } from "antd-mobile/es/components/form";
 
 export interface TabProps {
   form: FormInstance;
-  allOptions: any; // 替换为实际的类型
+  allOptions: any;
+  onIdNumberChange?: (idNumber: string) => void;
 }
 
 export interface TabConfig {

@@ -10,7 +10,19 @@ import {
 import { TabProps } from "./types";
 import dayjs from "dayjs";
 
-const BasicInfo: React.FC<TabProps> = ({ form, allOptions }) => {
+const BasicInfo: React.FC<TabProps> = ({
+  form,
+  allOptions,
+  onIdNumberChange,
+}) => {
+  // 处理身份证号码失焦事件
+  const handleIdNumberBlur = async (value: string) => {
+    const idNumber = value.trim();
+    if (idNumber.length >= 15) {
+      onIdNumberChange?.(idNumber);
+    }
+  };
+
   return (
     <>
       <Form.Item
@@ -25,7 +37,10 @@ const BasicInfo: React.FC<TabProps> = ({ form, allOptions }) => {
         label="身份证号码"
         rules={[{ required: true, message: "请输入身份证号码" }]}
       >
-        <Input placeholder="请输入身份证号码" />
+        <Input
+          placeholder="请输入身份证号码"
+          onBlur={(e) => handleIdNumberBlur(e.target.value)}
+        />
       </Form.Item>
       <Form.Item
         name="contact_way"

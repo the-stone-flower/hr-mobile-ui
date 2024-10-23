@@ -139,6 +139,16 @@ export const getListItem = createAsyncThunk(
   }
 );
 
+export const getListItemFromId = createAsyncThunk(
+  `${namespace}/getListItem`,
+  async (item: IRecruitFilterParams, { dispatch }) => {
+    const { data } = await request.get("/recruit/ext/detail_from_mobile/", {
+      params: item,
+    });
+    return data;
+  }
+);
+
 const listSelectSlice = createSlice({
   name: namespace,
   initialState,

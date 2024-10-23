@@ -2,13 +2,15 @@ import React, { useState, useEffect } from "react";
 import { Form, Button, Toast, Tabs, SpinLoading } from "antd-mobile";
 import { useAppDispatch, useAppSelector } from "modules/store";
 import { fetchOptions, optionsSelector } from "modules/options/index";
-import { addListItem } from "modules/list/recruit";
+import { addListItem, getListItemFromId } from "modules/list/recruit";
 import { tabConfigs } from "./config";
+import { CheckCircleFill } from "antd-mobile-icons";
 
 const ApplicationForm: React.FC = () => {
   const [form] = Form.useForm();
   const [activeKey, setActiveKey] = useState("1");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const dispatch = useAppDispatch();
   const { allOptions } = useAppSelector(optionsSelector);
 
@@ -24,7 +26,9 @@ const ApplicationForm: React.FC = () => {
       if (currentTabConfig) {
         await form.validateFields(currentTabConfig.fields);
       }
-      const currentIndex = tabConfigs.findIndex((config) => config.key === activeKey);
+      const currentIndex = tabConfigs.findIndex(
+        (config) => config.key === activeKey
+      );
       if (currentIndex < tabConfigs.length - 1) {
         setActiveKey(tabConfigs[currentIndex + 1].key);
       }
@@ -38,7 +42,9 @@ const ApplicationForm: React.FC = () => {
   };
 
   const handlePrevious = () => {
-    const currentIndex = tabConfigs.findIndex((config) => config.key === activeKey);
+    const currentIndex = tabConfigs.findIndex(
+      (config) => config.key === activeKey
+    );
     if (currentIndex > 0) {
       setActiveKey(tabConfigs[currentIndex - 1].key);
     }
@@ -65,10 +71,7 @@ const ApplicationForm: React.FC = () => {
       console.log("Processed Form values:", processedValues);
 
       await dispatch(addListItem(processedValues)).unwrap();
-      Toast.show({
-        icon: "success",
-        content: "提交成功！",
-      });
+      setIsSubmitted(true);
     } catch (errorInfo) {
       console.log("Failed:", errorInfo);
       Toast.show({
@@ -81,7 +84,9 @@ const ApplicationForm: React.FC = () => {
   };
 
   const renderNavigationButtons = () => {
-    const currentIndex = tabConfigs.findIndex((config) => config.key === activeKey);
+    const currentIndex = tabConfigs.findIndex(
+      (config) => config.key === activeKey
+    );
     const isFirstTab = currentIndex === 0;
     const isLastTab = currentIndex === tabConfigs.length - 1;
 
@@ -98,9 +103,9 @@ const ApplicationForm: React.FC = () => {
           </Button>
         )}
         {isLastTab && (
-          <Button 
-            color="primary" 
-            onClick={onFinish} 
+          <Button
+            color="primary"
+            onClick={onFinish}
             loading={isSubmitting}
             loadingText="提交中"
             className="flex-grow"
@@ -111,6 +116,15 @@ const ApplicationForm: React.FC = () => {
       </div>
     );
   };
+
+  if (isSubmitted) {
+    return (
+      <div className="flex flex-col items-center justify-center h-screen">
+        <CheckCircleFill className="text-green-500 text-6xl mb-4" />
+        <p className="text-xl">登记提交成功</p>
+      </div>
+    );
+  }
 
   return (
     <div className="app-container">

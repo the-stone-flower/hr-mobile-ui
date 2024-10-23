@@ -88,7 +88,11 @@ const FamilyInfo: React.FC<TabProps> = ({ form, allOptions }) => {
               datePickerRef.current?.open();
             }}
           >
-            <DatePicker>
+            <DatePicker
+              min={new Date(1924, 0, 1)} // 设置为100年前
+              max={new Date()} // 设置到当前时间
+              precision="day" // 精确到天
+            >
               {(value) =>
                 value ? dayjs(value).format("YYYY-MM-DD") : "请选择出生年月"
               }
