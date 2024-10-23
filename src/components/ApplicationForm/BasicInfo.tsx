@@ -62,7 +62,7 @@ const BasicInfo: React.FC<TabProps> = ({
           {(value) => (value ? value[0]?.label : "请选择应聘岗位")}
         </Picker>
       </Form.Item>
-      {/* <Form.Item name="gender" label="性别">
+      <Form.Item name="gender" label="性别">
         <Radio.Group>
           {allOptions.gender_options?.options?.map((option: any) => (
             <Radio key={option.value} value={option.value}>
@@ -175,7 +175,7 @@ const BasicInfo: React.FC<TabProps> = ({
             return items.map((item: any) => item?.label)?.join(" - ");
           }}
         </CascadePicker>
-      </Form.Item> */}
+      </Form.Item>
     </>
   );
 };
