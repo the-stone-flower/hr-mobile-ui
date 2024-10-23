@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Form, Input, Picker, DatePicker, Button } from "antd-mobile";
 import { TabProps } from "./types";
 import dayjs from "dayjs";
@@ -22,6 +22,14 @@ const defaultEducation: EducationRecord = {
 const EducationInfo: React.FC<TabProps> = ({ form, allOptions }) => {
   const [educationList, setEducationList] = useState<EducationRecord[]>([]);
 
+  // 监听表单中教育经历列表的变化
+  useEffect(() => {
+    const edu_info_list = form.getFieldValue('edu_info_list');
+    if (edu_info_list && edu_info_list.length > 0) {
+      setEducationList(edu_info_list);
+    }
+  }, [form]);
+
   const addEducation = () => {
     const newList = [...educationList, defaultEducation];
     setEducationList(newList);
@@ -30,7 +38,10 @@ const EducationInfo: React.FC<TabProps> = ({ form, allOptions }) => {
   const removeEducation = (index: number) => {
     const newList = educationList.filter((_, i) => i !== index);
     setEducationList(newList);
-    // form.setFieldsValue({ edu_info_list: newList });
+    // // 更新表单数据
+    // const edu_info_list = form.getFieldValue('edu_info_list') || [];
+    // edu_info_list.splice(index, 1);
+    // form.setFieldsValue({ edu_info_list });
   };
 
   return (
@@ -70,7 +81,10 @@ const EducationInfo: React.FC<TabProps> = ({ form, allOptions }) => {
               {(value) => (value ? value[0]?.label : "请选择学位")}
             </Picker>
           </Form.Item>
-          <Form.Item name={["edu_info_list", index, "major"]} label="专业">
+          <Form.Item 
+            name={["edu_info_list", index, "major"]} 
+            label="专业"
+          >
             <Input placeholder="请输入专业" />
           </Form.Item>
           <Form.Item

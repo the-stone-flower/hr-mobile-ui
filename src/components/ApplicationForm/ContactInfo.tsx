@@ -1,88 +1,115 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Form, Input, TextArea, CascadePicker } from "antd-mobile";
+import type {
+  PickerValue,
+  PickerValueExtend,
+} from "antd-mobile/es/components/picker";
 import { TabProps } from "./types";
 
+// 地址解析正则表达式
+const ADDRESS_REGEX =
+  /^(北京市|天津市|上海市|重庆市|[\u4e00-\u9fa5]{2,}省|[\u4e00-\u9fa5]{2,}自治区)((?!市)[\u4e00-\u9fa5]{2,}区|[\u4e00-\u9fa5]{2,}市|[\u4e00-\u9fa5]{2,}县)?([\u4e00-\u9fa5]{2,}区|[\u4e00-\u9fa5]{2,}县)?(.+)?$/;
+
 const ContactInfo: React.FC<TabProps> = ({ form, allOptions }) => {
+  // 控制省市区选择器的显示
   const [familyVisible, setFamilyVisible] = useState(false);
   const [emergencyVisible, setEmergencyVisible] = useState(false);
 
+  // 前端管理的地址字段
+  const [familyRegion, setFamilyRegion] = useState<string[]>([]);
+  const [familyLocation, setFamilyLocation] = useState("");
+  const [emergencyRegion, setEmergencyRegion] = useState<string[]>([]);
+  const [emergencyLocation, setEmergencyLocation] = useState("");
+
   const areaData = allOptions.work_place_options?.options;
 
+  // 判断是否是直辖市
+  const isDirectCity = (province: string) => {
+    return ["北京市", "上海市", "天津市", "重庆市"].includes(province);
+  };
+
+  // 地址解析函数
+  const parseAddress = (address: string) => {
+    const match = address.match(ADDRESS_REGEX);
+    if (match) {
+      const [, province, city, district, detail] = match;
+
+      if (isDirectCity(province)) {
+        // 直辖市返回两级地址
+        return {
+          region: [province, city],
+          location: detail?.trim() || "",
+        };
+      } else {
+        // 普通省份返回三级地址
+        return {
+          region: [province, city, district],
+          location: detail?.trim() || "",
+        };
+      }
+    }
+    return null;
+  };
+
+  // 监听现居地址变化
+  useEffect(() => {
+    const family_address = form.getFieldValue("family_address");
+    if (family_address) {
+      const parsed = parseAddress(family_address);
+      if (parsed) {
+        setFamilyRegion(parsed.region);
+        setFamilyLocation(parsed.location);
+      }
+    }
+  }, [form.getFieldValue("family_address")]);
+
+  // 监听紧急联系人地址变化
+  useEffect(() => {
+    const emergency_address = form.getFieldValue("emergency_address");
+    if (emergency_address) {
+      const parsed = parseAddress(emergency_address);
+      if (parsed) {
+        setEmergencyRegion(parsed.region);
+        setEmergencyLocation(parsed.location);
+      }
+    }
+  }, [form.getFieldValue("emergency_address")]);
+
   // 处理现居地址的省市区选择
-  const handleFamilyRegionChange = (val: string[], extend: any) => {
-    const regionText = extend.items.map((item: any) => item.label).join("");
-    const location = form.getFieldValue("family_location") || "";
+  const handleFamilyRegionChange = (
+    val: PickerValue[],
+    extend: PickerValueExtend
+  ) => {
+    setFamilyRegion(val as string[]);
     form.setFieldsValue({
-      family_region: val,
-      family_address: regionText + location,
+      family_address: (val as string[]).join("") + familyLocation,
     });
   };
 
   // 处理现居地址的详细地址输入
   const handleFamilyLocationChange = (value: string) => {
-    const regionText =
-      form
-        .getFieldValue("family_region")
-        ?.map((val: string, index: number) => {
-          const level =
-            index === 0
-              ? areaData
-              : index === 1
-              ? areaData.find(
-                  (p) => p.value === form.getFieldValue("family_region")[0]
-                )?.children
-              : areaData
-                  .find(
-                    (p) => p.value === form.getFieldValue("family_region")[0]
-                  )
-                  ?.children?.find(
-                    (c) => c.value === form.getFieldValue("family_region")[1]
-                  )?.children;
-          return level?.find((item: any) => item.value === val)?.label || "";
-        })
-        .join("") || "";
+    setFamilyLocation(value);
     form.setFieldsValue({
-      family_location: value,
-      family_address: regionText + value,
+      family_address: familyRegion.join("") + value,
     });
   };
 
   // 处理紧急联系人地址的省市区选择
-  const handleEmergencyRegionChange = (val: string[], extend: any) => {
-    const regionText = extend.items.map((item: any) => item.label).join("");
-    const location = form.getFieldValue("emergency_location") || "";
+  const handleEmergencyRegionChange = (
+    val: PickerValue[],
+    extend: PickerValueExtend
+  ) => {
+    setEmergencyRegion(val as string[]);
     form.setFieldsValue({
-      emergency_region: val,
-      emergency_address: regionText + location,
+      emergency_address: (val as string[]).join("") + emergencyLocation,
     });
   };
 
   // 处理紧急联系人地址的详细地址输入
   const handleEmergencyLocationChange = (value: string) => {
-    const regionText =
-      form
-        .getFieldValue("emergency_region")
-        ?.map((val: string, index: number) => {
-          const level =
-            index === 0
-              ? areaData
-              : index === 1
-              ? areaData.find(
-                  (p) => p.value === form.getFieldValue("emergency_region")[0]
-                )?.children
-              : areaData
-                  .find(
-                    (p) => p.value === form.getFieldValue("emergency_region")[0]
-                  )
-                  ?.children?.find(
-                    (c) => c.value === form.getFieldValue("emergency_region")[1]
-                  )?.children;
-          return level?.find((item: any) => item.value === val)?.label || "";
-        })
-        .join("") || "";
+    setEmergencyLocation(value);
     form.setFieldsValue({
-      emergency_location: value,
-      emergency_address: regionText + value,
+      emergency_address: emergencyRegion.join("") + value,
     });
   };
 
@@ -98,7 +125,6 @@ const ContactInfo: React.FC<TabProps> = ({ form, allOptions }) => {
 
       {/* 现居地址 - 省市区选择 */}
       <Form.Item
-        name="family_region"
         label="现居地区"
         trigger="onConfirm"
         onClick={() => {
@@ -111,6 +137,7 @@ const ContactInfo: React.FC<TabProps> = ({ form, allOptions }) => {
           onClose={() => {
             setFamilyVisible(false);
           }}
+          value={familyRegion}
           onConfirm={handleFamilyRegionChange}
         >
           {(items) => {
@@ -123,9 +150,10 @@ const ContactInfo: React.FC<TabProps> = ({ form, allOptions }) => {
       </Form.Item>
 
       {/* 现居地址 - 详细地址 */}
-      <Form.Item name="family_location" label="详细地址">
+      <Form.Item label="详细地址">
         <TextArea
           placeholder="请输入详细地址（如街道、楼牌号等）"
+          value={familyLocation}
           onChange={handleFamilyLocationChange}
         />
       </Form.Item>
@@ -157,7 +185,6 @@ const ContactInfo: React.FC<TabProps> = ({ form, allOptions }) => {
 
       {/* 紧急联系人地址 - 省市区选择 */}
       <Form.Item
-        name="emergency_region"
         label="紧急联系人地区"
         trigger="onConfirm"
         onClick={() => {
@@ -170,6 +197,7 @@ const ContactInfo: React.FC<TabProps> = ({ form, allOptions }) => {
           onClose={() => {
             setEmergencyVisible(false);
           }}
+          value={emergencyRegion}
           onConfirm={handleEmergencyRegionChange}
         >
           {(items) => {
@@ -182,9 +210,10 @@ const ContactInfo: React.FC<TabProps> = ({ form, allOptions }) => {
       </Form.Item>
 
       {/* 紧急联系人地址 - 详细地址 */}
-      <Form.Item name="emergency_location" label="紧急联系人详细地址">
+      <Form.Item label="紧急联系人详细地址">
         <TextArea
           placeholder="请输入详细地址（如街道、楼牌号等）"
+          value={emergencyLocation}
           onChange={handleEmergencyLocationChange}
         />
       </Form.Item>

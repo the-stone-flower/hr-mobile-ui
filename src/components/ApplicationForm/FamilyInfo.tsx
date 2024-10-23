@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Form, Input, Radio, Picker, DatePicker, Button } from "antd-mobile";
 import { TabProps } from "./types";
 import dayjs from "dayjs";
@@ -28,6 +28,14 @@ const defaultFamily: FamilyRecord = {
 const FamilyInfo: React.FC<TabProps> = ({ form, allOptions }) => {
   const [familyList, setFamilyList] = useState<FamilyRecord[]>([]);
 
+  // 监听表单中家庭成员列表的变化
+  useEffect(() => {
+    const social_info_list = form.getFieldValue('social_info_list');
+    if (social_info_list && social_info_list.length > 0) {
+      setFamilyList(social_info_list);
+    }
+  }, [form]);
+
   const addFamily = () => {
     const newList = [...familyList, defaultFamily];
     setFamilyList(newList);
@@ -36,7 +44,10 @@ const FamilyInfo: React.FC<TabProps> = ({ form, allOptions }) => {
   const removeFamily = (index: number) => {
     const newList = familyList.filter((_, i) => i !== index);
     setFamilyList(newList);
-    // form.setFieldsValue({ social_info_list: newList });
+    // // 更新表单数据
+    // const social_info_list = form.getFieldValue('social_info_list') || [];
+    // social_info_list.splice(index, 1);
+    // form.setFieldsValue({ social_info_list });
   };
 
   return (

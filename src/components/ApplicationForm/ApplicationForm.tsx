@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Form, Button, Toast, Tabs, SpinLoading } from "antd-mobile";
 import { useAppDispatch, useAppSelector } from "modules/store";
 import { fetchOptions, optionsSelector } from "modules/options/index";
@@ -17,6 +17,28 @@ const ApplicationForm: React.FC = () => {
   useEffect(() => {
     dispatch(fetchOptions("create_ext_user_options"));
   }, [dispatch]);
+
+  // 处理身份证号变化，获取历史数据
+  const handleIdNumberChange = useCallback(
+    async (idNumber: string) => {
+      try {
+        const res = await dispatch(
+          getListItemFromId({ id_number: idNumber })
+        ).unwrap();
+        if (res && res.data) {
+          // 设置表单数据
+          form.setFieldsValue(res.data);
+          Toast.show({
+            icon: "success",
+            content: "已自动填充历史数据",
+          });
+        }
+      } catch (error) {
+        console.error("获取历史数据失败:", error);
+      }
+    },
+    [dispatch, form]
+  );
 
   const handleNext = async () => {
     try {
@@ -134,7 +156,13 @@ const ApplicationForm: React.FC = () => {
           <Tabs activeKey={activeKey} onChange={setActiveKey}>
             {tabConfigs.map(({ key, title, component: TabComponent }) => (
               <Tabs.Tab title={title} key={key}>
-                <TabComponent form={form} allOptions={allOptions} />
+                <TabComponent
+                  form={form}
+                  allOptions={allOptions}
+                  onIdNumberChange={
+                    key === "1" ? handleIdNumberChange : undefined
+                  }
+                />
               </Tabs.Tab>
             ))}
           </Tabs>

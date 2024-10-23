@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Form, Input, DatePicker, TextArea, Button } from "antd-mobile";
 import { TabProps } from "./types";
 import dayjs from "dayjs";
@@ -28,6 +28,14 @@ const defaultWork: WorkRecord = {
 const WorkExperience: React.FC<TabProps> = ({ form }) => {
   const [workList, setWorkList] = useState<WorkRecord[]>([]);
 
+  // 监听表单中工作经历列表的变化
+  useEffect(() => {
+    const workexp_info_list = form.getFieldValue('workexp_info_list');
+    if (workexp_info_list && workexp_info_list.length > 0) {
+      setWorkList(workexp_info_list);
+    }
+  }, [form]);
+
   const addWork = () => {
     const newList = [...workList, defaultWork];
     setWorkList(newList);
@@ -36,7 +44,10 @@ const WorkExperience: React.FC<TabProps> = ({ form }) => {
   const removeWork = (index: number) => {
     const newList = workList.filter((_, i) => i !== index);
     setWorkList(newList);
-    // form.setFieldsValue({ workexp_info_list: newList });
+    // // 更新表单数据
+    // const workexp_info_list = form.getFieldValue('workexp_info_list') || [];
+    // workexp_info_list.splice(index, 1);
+    // form.setFieldsValue({ workexp_info_list });
   };
 
   return (
@@ -86,7 +97,10 @@ const WorkExperience: React.FC<TabProps> = ({ form }) => {
           >
             <Input placeholder="请输入部门" />
           </Form.Item>
-          <Form.Item name={["workexp_info_list", index, "job"]} label="职位">
+          <Form.Item 
+            name={["workexp_info_list", index, "job"]} 
+            label="职位"
+          >
             <Input placeholder="请输入职位" />
           </Form.Item>
           <Form.Item
