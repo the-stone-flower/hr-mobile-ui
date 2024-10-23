@@ -20,7 +20,6 @@ interface PickerOption {
 
 const EducationInfo: React.FC<TabProps> = ({ form, allOptions }) => {
   const [localEduList, setLocalEduList] = useState<EducationRecord[]>([]);
-  const [educationOptions, setEducationOptions] = useState<PickerOption[]>([]);
 
   // 监听表单值变化，设置初始值
   useEffect(() => {
@@ -41,14 +40,6 @@ const EducationInfo: React.FC<TabProps> = ({ form, allOptions }) => {
     setLocalEduList(newList);
   };
 
-  // 处理学历类型变化
-  const handleEducationTypeChange = (index: number, val: any) => {
-    const selectedType = allOptions.education_info_options?.options.find(
-      (option: any) => option.value === val[0]
-    );
-
-    setEducationOptions(selectedType?.children || []);
-  };
 
   // 辅助函数：获取选择器显示文本
   const getPickerDisplayText = (
@@ -96,13 +87,12 @@ const EducationInfo: React.FC<TabProps> = ({ form, allOptions }) => {
             }}
           >
             <Picker
-              columns={[allOptions.education_info_options?.options || []]}
-              onConfirm={(val) => handleEducationTypeChange(index, val)}
+              columns={[allOptions.education_type_options?.options || []]}
             >
               {(value) =>
                 getPickerDisplayText(
                   value,
-                  allOptions.education_info_options?.options || [],
+                  allOptions.education_type_options?.options || [],
                   "请选择学历类型",
                   ["edu_info_list", String(index), "education_type"]
                 )
@@ -118,15 +108,17 @@ const EducationInfo: React.FC<TabProps> = ({ form, allOptions }) => {
             onClick={(e, pickerRef) => {
               pickerRef.current?.open();
             }}
-            dependencies={[["edu_info_list", String(index), "education_type"]]}
           >
-            <Picker columns={[educationOptions]}>
+            <Picker columns={[allOptions.education_options?.options || []]}>
               {(value) =>
-                getPickerDisplayText(value, educationOptions, "请选择学历", [
-                  "edu_info_list",
-                  String(index),
-                  "education",
-                ])
+                getPickerDisplayText(value,
+                  allOptions.education_options?.options || [],
+                  "请选择学历",
+                  [
+                    "edu_info_list",
+                    String(index),
+                    "education",
+                  ])
               }
             </Picker>
           </Form.Item>
