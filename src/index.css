@@ -92,6 +92,7 @@ html {
 .adm-form-item {
   margin-bottom: 6px;
 }
+
 .adm-radio {
   margin-right: 16px;
 }
@@ -175,4 +176,12 @@ html {
 
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
+}
+
+
+.adm-image-uploader-upload-button-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
 }

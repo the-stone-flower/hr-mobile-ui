@@ -3,6 +3,7 @@ import ContactInfo from "./ContactInfo";
 import EducationInfo from "./EducationInfo";
 import WorkExperience from "./WorkExperience";
 import FamilyInfo from "./FamilyInfo";
+import SkillInfo from "./SkillInfo";  // 导入技能信息组件
 import { TabConfig } from "./types";
 
 export const tabConfigs: TabConfig[] = [
@@ -60,5 +61,11 @@ export const tabConfigs: TabConfig[] = [
     title: "家庭信息",
     component: FamilyInfo,
     fields: ["social_info_list"],
+  },
+  {
+    key: "6",
+    title: "技能信息",
+    component: SkillInfo,
+    fields: ["skill_info_list"],
   },
 ];

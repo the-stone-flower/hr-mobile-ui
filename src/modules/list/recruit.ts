@@ -2,6 +2,8 @@ import request from "../../utils/request";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { RootState } from "../store";
 import { formatFormValue } from "../../utils/format";
+import { Toast } from 'antd-mobile';
+import { TOKEN_NAME } from 'configs';
 
 export interface IRecruit {
   id: number;
@@ -14,10 +16,11 @@ export interface IRecruit {
   operator_name: string;
   created_at: string;
   updated_at: string;
-  auth_url?: string; // 假设认证 URL 是可选的
+  auth_url?: string;
   edu_info_list: any;
   workexp_info_list: any;
   social_info_list: any;
+  skill_info_list: any;
 }
 
 interface IInitialState {
@@ -28,6 +31,8 @@ interface IInitialState {
   total: number;
   dataList: IRecruit[];
   searchForm: IRecruit | undefined;
+  uploadLoading: boolean;
+  uploadError: string | null;
 }
 
 type IRecruitFilterParams = Partial<IRecruit> & {
@@ -45,6 +50,8 @@ const initialState: IInitialState = {
   total: 0,
   dataList: [],
   searchForm: undefined,
+  uploadLoading: false,
+  uploadError: null,
 };
 
 const namespace = "list/eaccount";
@@ -78,11 +85,46 @@ export const getList = createAsyncThunk(
   }
 );
 
+export const uploadFile = createAsyncThunk(
+  `${namespace}/uploadFile`,
+  async (file: { raw: File, name: string }, { rejectWithValue }) => {
+    try {
+      const formData = new FormData();
+      if (file.raw instanceof File) {
+        formData.append('file', file.raw, file.name);
+      } else {
+        throw new Error('Invalid file object');
+      }
+
+      const { data } = await request.post('/file_upload/free_resource/', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          'Content-Disposition': `attachment; filename="${encodeURIComponent(file.name || '')}"`
+        },
+      });
+
+      return data;
+    } catch (error: any) {
+      Toast.show({
+        icon: 'fail',
+        content: '文件上传失败'
+      });
+      return rejectWithValue(error.message || '文件上传失败');
+    }
+  }
+);
+
 export const addListItem = createAsyncThunk(
   `${namespace}/addListItem`,
-  async (item: IRecruitFilterParams, {}) => {
-    const { edu_info_list, workexp_info_list, social_info_list, ...other } =
-      item;
+  async (item: IRecruitFilterParams, { }) => {
+    const {
+      edu_info_list,
+      workexp_info_list,
+      social_info_list,
+      skill_info_list,
+      ...other
+    } = item;
+
     const otherForm = formatFormValue(other);
     const eduList = Array.isArray(edu_info_list)
       ? edu_info_list
@@ -93,39 +135,42 @@ export const addListItem = createAsyncThunk(
     const socialList = Array.isArray(social_info_list)
       ? social_info_list
       : Object.values(social_info_list);
+    const skillList = Array.isArray(skill_info_list)
+      ? skill_info_list
+      : Object.values(skill_info_list);
+
     const payload = {
       ...otherForm,
       edu_info_list: eduList.map((item: any) => formatFormValue(item)),
       workexp_info_list: workList.map((item: any) => formatFormValue(item)),
       social_info_list: socialList.map((item: any) => formatFormValue(item)),
+      skill_info_list: skillList.map((item: any) => formatFormValue(item)),
     };
+
     const { data } = await request.post(
       `/recruit/ext/create_from_mobile/`,
       payload
     );
-    // await dispatch(getList({}));
     return data;
   }
 );
 
 export const deleteListItem = createAsyncThunk(
   `${namespace}/deleteListItem`,
-  async (id: number, {}) => {
+  async (id: number, { }) => {
     await request.delete(`/recruit/ext/create_from_mobile/${id}/`);
-    // await dispatch(getList({}));
     return id;
   }
 );
 
 export const editListItem = createAsyncThunk(
   `${namespace}/editListItem`,
-  async (item: IRecruitFilterParams, {}) => {
+  async (item: IRecruitFilterParams, { }) => {
     const { id, ...payload } = item;
     const { data } = await request.patch(
       `/recruit/ext/create_from_mobile/${id}/`,
       payload
     );
-    // await dispatch(getList({}));
     return data;
   }
 );
@@ -152,6 +197,43 @@ export const getListItemFromId = createAsyncThunk(
   }
 );
 
+export const validateFile = (file: File, options: {
+  maxSize?: number;
+  acceptedTypes?: string[];
+} = {}) => {
+  const {
+    maxSize = 10 * 1024 * 1024,
+    acceptedTypes = ['image/*', '.pdf', '.doc', '.docx']
+  } = options;
+
+  if (file.size > maxSize) {
+    Toast.show({
+      icon: 'fail',
+      content: `文件大小不能超过 ${Math.floor(maxSize / 1024 / 1024)}MB`
+    });
+    return false;
+  }
+
+  const fileType = file.type;
+  const fileName = file.name.toLowerCase();
+  const isValidType = acceptedTypes.some(type => {
+    if (type.includes('*')) {
+      return fileType.includes(type.replace('*', ''));
+    }
+    return fileName.endsWith(type);
+  });
+
+  if (!isValidType) {
+    Toast.show({
+      icon: 'fail',
+      content: '不支持的文件类型'
+    });
+    return false;
+  }
+
+  return true;
+};
+
 const listSelectSlice = createSlice({
   name: namespace,
   initialState,
@@ -159,6 +241,9 @@ const listSelectSlice = createSlice({
     clearPageState: () => initialState,
     setSearchForm: (state, action) => {
       state.searchForm = action.payload;
+    },
+    clearUploadError: (state) => {
+      state.uploadError = null;
     },
   },
   extraReducers: (builder) => {
@@ -175,12 +260,27 @@ const listSelectSlice = createSlice({
       })
       .addCase(getList.rejected, (state) => {
         state.loading = false;
-      });
+      })
+      .addCase(uploadFile.pending, (state) => {
+        state.uploadLoading = true;
+        state.uploadError = null;
+      })
+      .addCase(uploadFile.fulfilled, (state) => {
+        state.uploadLoading = false;
+      })
+      .addCase(uploadFile.rejected, (state, action) => {
+        state.uploadLoading = false;
+        state.uploadError = action.payload as string;
+      })
   },
 });
 
-export const { clearPageState, setSearchForm } = listSelectSlice.actions;
+export const { clearPageState, setSearchForm, clearUploadError } = listSelectSlice.actions;
 
 export const listState = (state: RootState) => state.listRecruit;
+export const uploadState = (state: RootState) => ({
+  loading: state.listRecruit.uploadLoading,
+  error: state.listRecruit.uploadError,
+});
 
 export default listSelectSlice.reducer;
