@@ -135,10 +135,11 @@ export const addListItem = createAsyncThunk(
     const payload = {
       ...formatFormValue(other),
     };
+
     // 是列表的字段需要在这加上，进行列表里面的字段格式化
     const listInfo = ['edu_info_list', 'workexp_info_list', 'social_info_list', 'skill_info_list']
     listInfo.forEach((key) => {
-      if (items[key] && items[key].length) {
+      if (items[key]) {
         payload[key] = formateListInfo(items[key])
       }
     })
