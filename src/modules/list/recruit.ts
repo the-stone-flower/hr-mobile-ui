@@ -1,9 +1,10 @@
-import request from "../../utils/request";
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { RootState } from "../store";
-import { formatFormValue } from "../../utils/format";
+import request from '../../utils/request';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { RootState } from '../store';
+import { formatFormValue } from '../../utils/format';
 import { Toast } from 'antd-mobile';
 import { TOKEN_NAME } from 'configs';
+import { healthInfoFormDataProcessor, legalInfoFormDataProcessor } from 'utils/formDataProcessor';
 
 export interface IRecruit {
   id: number;
@@ -21,6 +22,8 @@ export interface IRecruit {
   workexp_info_list: any;
   social_info_list: any;
   skill_info_list: any;
+  health_info: any;
+  legal_info: any;
 }
 
 interface IInitialState {
@@ -43,7 +46,7 @@ type IRecruitFilterParams = Partial<IRecruit> & {
 };
 
 const initialState: IInitialState = {
-  search: "",
+  search: '',
   loading: true,
   current: 1,
   pageSize: 10,
@@ -54,25 +57,21 @@ const initialState: IInitialState = {
   uploadError: null,
 };
 
-const namespace = "list/eaccount";
+const namespace = 'list/eaccount';
 
 export const getList = createAsyncThunk(
   `${namespace}/getList`,
   async (params: IRecruitFilterParams, { getState }) => {
     const { current, pageSize, ...reset } = params;
     const state = getState() as RootState;
-    const {
-      current: cacheCurrent,
-      pageSize: cachePageSize,
-      searchForm,
-    } = state.listRecruit;
+    const { current: cacheCurrent, pageSize: cachePageSize, searchForm } = state.listRecruit;
     const payload = {
       ...searchForm,
       ...reset,
       page: current || cacheCurrent,
       page_size: pageSize || cachePageSize,
     };
-    const { data } = await request.get("/recruit/ext/create_from_mobile/", {
+    const { data } = await request.get('/recruit/ext/create_from_mobile/', {
       params: payload,
     });
 
@@ -82,12 +81,12 @@ export const getList = createAsyncThunk(
       pageSize: payload.page_size,
       current: payload.page,
     };
-  }
+  },
 );
 
 export const uploadFile = createAsyncThunk(
   `${namespace}/uploadFile`,
-  async (file: { raw: File, name: string }, { rejectWithValue }) => {
+  async (file: { raw: File; name: string }, { rejectWithValue }) => {
     try {
       const formData = new FormData();
       if (file.raw instanceof File) {
@@ -99,7 +98,7 @@ export const uploadFile = createAsyncThunk(
       const { data } = await request.post('/file_upload/free_resource/', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
-          'Content-Disposition': `attachment; filename="${encodeURIComponent(file.name || '')}"`
+          'Content-Disposition': `attachment; filename="${encodeURIComponent(file.name || '')}"`,
         },
       });
 
@@ -107,113 +106,90 @@ export const uploadFile = createAsyncThunk(
     } catch (error: any) {
       Toast.show({
         icon: 'fail',
-        content: '文件上传失败'
+        content: '文件上传失败',
       });
       return rejectWithValue(error.message || '文件上传失败');
     }
-  }
+  },
 );
 
 const formateListInfo = (listInfo: any) => {
-  if (!listInfo) return []
-  const infoList = Array.isArray(listInfo)
-    ? listInfo
-    : Object.values(listInfo);
-  return infoList?.map((item: any) => formatFormValue(item))
-}
+  if (!listInfo) return [];
+  const infoList = Array.isArray(listInfo) ? listInfo : Object.values(listInfo);
+  return infoList?.map((item: any) => formatFormValue(item));
+};
 
-export const addListItem = createAsyncThunk(
-  `${namespace}/addListItem`,
-  async (items: any, { }) => {
-    const {
-      edu_info_list,
-      workexp_info_list,
-      social_info_list,
-      skill_info_list,
-      ...other
-    } = items;
-    const payload = {
-      ...formatFormValue(other),
-    };
+export const addListItem = createAsyncThunk(`${namespace}/addListItem`, async (items: any, {}) => {
+  const { health_info, legal_info, ...other } = items;
 
-    // 是列表的字段需要在这加上，进行列表里面的字段格式化
-    const listInfo = ['edu_info_list', 'workexp_info_list', 'social_info_list', 'skill_info_list']
-    listInfo.forEach((key) => {
-      if (items[key]) {
-        payload[key] = formateListInfo(items[key])
-      }
-    })
+  const payload = {
+    ...formatFormValue(other),
+    health_info: healthInfoFormDataProcessor(health_info).toPayload(),
+    legal_info: legalInfoFormDataProcessor(legal_info).toPayload(),
+  };
 
-    const { data } = await request.post(
-      `/recruit/ext/create_from_mobile/`,
-      payload
-    );
-    return data;
-  }
-);
+  // 是列表的字段需要在这加上，进行列表里面的字段格式化
+  const listInfo = ['edu_info_list', 'workexp_info_list', 'social_info_list', 'skill_info_list'];
+  listInfo.forEach((key) => {
+    if (items[key]) {
+      payload[key] = formateListInfo(items[key]);
+    }
+  });
 
-export const deleteListItem = createAsyncThunk(
-  `${namespace}/deleteListItem`,
-  async (id: number, { }) => {
-    await request.delete(`/recruit/ext/create_from_mobile/${id}/`);
-    return id;
-  }
-);
+  const { data } = await request.post(`/recruit/ext/create_from_mobile/`, payload);
+  return data;
+});
+
+export const deleteListItem = createAsyncThunk(`${namespace}/deleteListItem`, async (id: number, {}) => {
+  await request.delete(`/recruit/ext/create_from_mobile/${id}/`);
+  return id;
+});
 
 export const editListItem = createAsyncThunk(
   `${namespace}/editListItem`,
-  async (item: IRecruitFilterParams, { }) => {
+  async (item: IRecruitFilterParams, {}) => {
     const { id, ...payload } = item;
-    const { data } = await request.patch(
-      `/recruit/ext/create_from_mobile/${id}/`,
-      payload
-    );
+    const { data } = await request.patch(`/recruit/ext/create_from_mobile/${id}/`, payload);
     return data;
-  }
+  },
 );
 
 export const getListItem = createAsyncThunk(
   `${namespace}/getListItem`,
   async (item: IRecruitFilterParams, { dispatch }) => {
-    const { data } = await request.get(
-      `/recruit/ext/create_from_mobile/${item.id}/`,
-      { params: item }
-    );
+    const { data } = await request.get(`/recruit/ext/create_from_mobile/${item.id}/`, { params: item });
     return data;
-  }
+  },
 );
 
 export const getListItemFromId = createAsyncThunk(
   `${namespace}/getListItem`,
   async (payload: any, { dispatch }) => {
-    const { data } = await request.post(
-      "/recruit/ext/detail_from_mobile/",
-      payload
-    );
+    const { data } = await request.post('/recruit/ext/detail_from_mobile/', payload);
     return data;
-  }
+  },
 );
 
-export const validateFile = (file: File, options: {
-  maxSize?: number;
-  acceptedTypes?: string[];
-} = {}) => {
-  const {
-    maxSize = 10 * 1024 * 1024,
-    acceptedTypes = ['image/*', '.pdf', '.doc', '.docx']
-  } = options;
+export const validateFile = (
+  file: File,
+  options: {
+    maxSize?: number;
+    acceptedTypes?: string[];
+  } = {},
+) => {
+  const { maxSize = 10 * 1024 * 1024, acceptedTypes = ['image/*', '.pdf', '.doc', '.docx'] } = options;
 
   if (file.size > maxSize) {
     Toast.show({
       icon: 'fail',
-      content: `文件大小不能超过 ${Math.floor(maxSize / 1024 / 1024)}MB`
+      content: `文件大小不能超过 ${Math.floor(maxSize / 1024 / 1024)}MB`,
     });
     return false;
   }
 
   const fileType = file.type;
   const fileName = file.name.toLowerCase();
-  const isValidType = acceptedTypes.some(type => {
+  const isValidType = acceptedTypes.some((type) => {
     if (type.includes('*')) {
       return fileType.includes(type.replace('*', ''));
     }
@@ -223,7 +199,7 @@ export const validateFile = (file: File, options: {
   if (!isValidType) {
     Toast.show({
       icon: 'fail',
-      content: '不支持的文件类型'
+      content: '不支持的文件类型',
     });
     return false;
   }
@@ -268,7 +244,7 @@ const listSelectSlice = createSlice({
       .addCase(uploadFile.rejected, (state, action) => {
         state.uploadLoading = false;
         state.uploadError = action.payload as string;
-      })
+      });
   },
 });
 
