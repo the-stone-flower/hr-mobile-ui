@@ -89,8 +89,7 @@ const SkillInfo: React.FC<TabProps> = ({ form, allOptions }) => {
   // 获取当前索引的文件列表
   const getFileList = (index: number): ImageUploadItem[] => {
     const attachment = form.getFieldValue(["skill_info_list", String(index), "attachment"]);
-    const url = Array.isArray(attachment) ? attachment[0].url : attachment
-
+    const url = Array.isArray(attachment) ? attachment?.[0]?.url : attachment
     return url ? [{url}] : [];
   };
 
