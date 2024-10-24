@@ -120,7 +120,15 @@ const formateListInfo = (listInfo: any) => {
 };
 
 export const addListItem = createAsyncThunk(`${namespace}/addListItem`, async (items: any, {}) => {
-  const { health_info, legal_info, ...other } = items;
+  const {
+    health_info,
+    legal_info,
+    edu_info_list,
+    workexp_info_list,
+    social_info_list,
+    skill_info_list,
+    ...other
+  } = items;
 
   const payload = {
     ...formatFormValue(other),
