@@ -3,7 +3,8 @@ import ContactInfo from "./ContactInfo";
 import EducationInfo from "./EducationInfo";
 import WorkExperience from "./WorkExperience";
 import FamilyInfo from "./FamilyInfo";
-import SkillInfo from "./SkillInfo";  // 导入技能信息组件
+import SkillInfo from "./SkillInfo";
+import OtherInfo from './OtherInfo'
 import { TabConfig } from "./types";
 
 export const tabConfigs: TabConfig[] = [
@@ -67,5 +68,11 @@ export const tabConfigs: TabConfig[] = [
     title: "技能信息",
     component: SkillInfo,
     fields: ["skill_info_list"],
+  },
+  {
+    key: "7",
+    title: "其他信息",
+    component: OtherInfo,
+    fields: ["pers_profile", 'social_media_account', 'pers_photo'],
   },
 ];

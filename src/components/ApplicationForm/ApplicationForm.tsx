@@ -81,17 +81,12 @@ const ApplicationForm: React.FC = () => {
 
       const processedValues = {
         ...values,
-        edu_info_list: values.edu_info_list || [],
-        workexp_info_list: values.workexp_info_list || [],
-        social_info_list: values.social_info_list || [],
       };
-
+      // 特殊处理残疾类型
       if (processedValues.physical_disability) {
         processedValues.physical_disability =
           processedValues.physical_disability[1];
       }
-
-      console.log("Processed Form values:", processedValues);
 
       await dispatch(addListItem(processedValues)).unwrap();
       setIsSubmitted(true);

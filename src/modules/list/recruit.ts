@@ -114,38 +114,34 @@ export const uploadFile = createAsyncThunk(
   }
 );
 
+const formateListInfo = (listInfo: any) => {
+  if (!listInfo) return []
+  const infoList = Array.isArray(listInfo)
+    ? listInfo
+    : Object.values(listInfo);
+  return infoList?.map((item: any) => formatFormValue(item))
+}
+
 export const addListItem = createAsyncThunk(
   `${namespace}/addListItem`,
-  async (item: IRecruitFilterParams, { }) => {
+  async (items: any, { }) => {
     const {
       edu_info_list,
       workexp_info_list,
       social_info_list,
       skill_info_list,
       ...other
-    } = item;
-
-    const otherForm = formatFormValue(other);
-    const eduList = Array.isArray(edu_info_list)
-      ? edu_info_list
-      : Object.values(edu_info_list);
-    const workList = Array.isArray(workexp_info_list)
-      ? workexp_info_list
-      : Object.values(workexp_info_list);
-    const socialList = Array.isArray(social_info_list)
-      ? social_info_list
-      : Object.values(social_info_list);
-    const skillList = Array.isArray(skill_info_list)
-      ? skill_info_list
-      : Object.values(skill_info_list);
-
+    } = items;
     const payload = {
-      ...otherForm,
-      edu_info_list: eduList.map((item: any) => formatFormValue(item)),
-      workexp_info_list: workList.map((item: any) => formatFormValue(item)),
-      social_info_list: socialList.map((item: any) => formatFormValue(item)),
-      skill_info_list: skillList.map((item: any) => formatFormValue(item)),
+      ...formatFormValue(other),
     };
+    // 是列表的字段需要在这加上，进行列表里面的字段格式化
+    const listInfo = ['edu_info_list', 'workexp_info_list', 'social_info_list', 'skill_info_list']
+    listInfo.forEach((key) => {
+      if (items[key] && items[key].length) {
+        payload[key] = formateListInfo(items[key])
+      }
+    })
 
     const { data } = await request.post(
       `/recruit/ext/create_from_mobile/`,
