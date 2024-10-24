@@ -2,11 +2,11 @@ const serArray = (value) => (Array.isArray(value) ? value : [value]);
 const deserArray = (value) => (Array.isArray(value) ? value.join('') : value);
 const serBoolean = (value) => value === 'true';
 const deserBoolean = (value) => (value === true ? 'true' : 'false');
-const serDate = (value) => value ? new Date(value) : new Date();
+const serDate = (value) => (value ? new Date(value) : new Date());
 
 export const healthInfoFormDataProcessor = (formData) => {
   function toInput() {
-    const health_type = serArray(formData.health_type);
+    const health_type = serArray(formData.health_type || '');
     const allergy_history = formData.allergy_history?.map((item) => ({
       ...item,
       start_time: serDate(item.start_time),
@@ -22,7 +22,7 @@ export const healthInfoFormDataProcessor = (formData) => {
 
   function toPayload() {
     const health_type = deserArray(formData.health_type);
-    return { ...formData, health_type };
+    return { ...formData, health_type: health_type || null };
   }
 
   return { toInput, toPayload };

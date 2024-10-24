@@ -10,7 +10,7 @@ interface SkillRecord {
   skill_level_dir: string;
   skill_level: string;
   skill_date: string;
-  attachment: string;
+  attach_file: string;
 }
 
 interface PickerOption {
@@ -88,8 +88,8 @@ const SkillInfo: React.FC<TabProps> = ({ form, allOptions }) => {
 
   // 获取当前索引的文件列表
   const getFileList = (index: number): ImageUploadItem[] => {
-    const attachment = form.getFieldValue(["skill_info_list", String(index), "attachment"]);
-    const url = Array.isArray(attachment) ? attachment?.[0]?.url : attachment
+    const attach_file = form.getFieldValue(["skill_info_list", String(index), "attach_file"]);
+    const url = Array.isArray(attach_file) ? attach_file?.[0]?.url : attach_file
     return url ? [{url}] : [];
   };
 
@@ -202,7 +202,7 @@ const SkillInfo: React.FC<TabProps> = ({ form, allOptions }) => {
           </Form.Item>
 
           <Form.Item
-            name={["skill_info_list", String(index), "attachment"]}
+            name={["skill_info_list", String(index), "attach_file"]}
             label="附件"
           >
             <ImageUploader

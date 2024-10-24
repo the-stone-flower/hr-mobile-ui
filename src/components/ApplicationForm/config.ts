@@ -7,6 +7,7 @@ import SkillInfo from './SkillInfo';
 import OtherInfo from './OtherInfo';
 import HealthInfo from './HealthInfo';
 import LegalInfo from './LegalInfo';
+import TitleExperience from './TitleExperience'
 import { TabConfig } from './types';
 
 export const tabConfigs: TabConfig[] = [
@@ -66,25 +67,31 @@ export const tabConfigs: TabConfig[] = [
     fields: ['social_info_list'],
   },
   {
-    key: '6',
+    key: "6",
+    title: "职业资格",
+    component: TitleExperience,
+    fields: ["pro_title_list"],
+  },
+  {
+    key: '7',
     title: '技能信息',
     component: SkillInfo,
     fields: ['skill_info_list'],
   },
   {
-    key: '7',
+    key: '8',
     title: '健康信息',
     component: HealthInfo,
     fields: ['health_info'],
   },
   {
-    key: '8',
+    key: '9',
     title: '法律信息',
     component: LegalInfo,
     fields: ['legal_info'],
   },
   {
-    key: '9',
+    key: '10',
     title: '其他信息',
     component: OtherInfo,
     fields: ['pers_profile', 'social_media_account', 'pers_photo'],

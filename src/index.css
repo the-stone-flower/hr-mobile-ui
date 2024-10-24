@@ -20,8 +20,7 @@
 
 body,
 html {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    "Helvetica Neue", Arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   line-height: 1.6;
   font-weight: 400;
   color: var(--text-color);
@@ -138,6 +137,15 @@ html {
   margin-top: 30px;
 }
 
+.adm-list-item-content-main {
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+.adm-list-item .adm-list-item-content {
+  border-top: 0;
+}
+
 /* 响应式设计 */
 @media (max-width: 480px) {
   .form-wrapper {
@@ -177,7 +185,6 @@ html {
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
-
 
 .adm-image-uploader-upload-button-icon {
   display: flex;

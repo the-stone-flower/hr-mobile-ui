@@ -151,7 +151,7 @@ const ApplicationForm: React.FC = () => {
     <div className='app-container'>
       <div className='form-wrapper mb-4'>
         <h1 className='form-title'>应聘登记表</h1>
-        <Form form={form}>
+        <Form form={form} mode='card'>
           <Tabs activeKey={activeKey} onChange={setActiveKey}>
             {tabConfigs.map(({ key, title, component: TabComponent }) => (
               <Tabs.Tab title={title} key={key}>

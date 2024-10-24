@@ -35,7 +35,8 @@ const OtherInfo: React.FC<TabProps> = ({ form }) => {
   const getPhotoFileList = (): ImageUploadItem[] => {
     const photo = form.getFieldValue("pers_photo");
     const url = Array.isArray(photo) ? photo?.[0]?.url : photo;
-    return url ? [{url}] : [];
+
+    return url ? [{url: url}] : [];
   };
 
   return (
