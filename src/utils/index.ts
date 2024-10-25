@@ -30,11 +30,7 @@ export function filterNullValues(obj: any) {
 
     // 处理基础信息中的日期字段
     if (['birthday', 'join_party_date'].includes(key) && value) {
-      if (value) {
-        result[key] = new Date(value);
-      } else {
-        return new Date();
-      }
+      result[key] = new Date(value);
       return;
     }
 
@@ -44,7 +40,8 @@ export function filterNullValues(obj: any) {
       return;
     }
 
-    if (['pers_photo'].includes(key)) {
+    // 处理基础信息中的照片
+    if (['pers_photo', 'id_front_file', 'id_back_file', 'discharge_military_file'].includes(key)) {
       result[key] = [
         {
           url: value,
@@ -69,6 +66,12 @@ export function filterNullValues(obj: any) {
           // 处理选择器字段
           if (['education_type', 'education', 'degree'].includes(itemKey)) {
             processedItem[itemKey] = [itemValue];
+            return;
+          }
+
+          // 处理图片字段
+          if (['graduated_attach_file', 'degree_attach_file'].includes(itemKey)) {
+            processedItem[itemKey] = itemValue ? [{ url: itemValue }] : [];
             return;
           }
 
@@ -206,6 +209,10 @@ export function filterNullValues(obj: any) {
       if (key === 'gender') {
         result[key] = Number(value);
       }
+    }
+    // 为null的直接删掉
+    if (value === null) {
+      delete result[key];
     }
   });
   return result;

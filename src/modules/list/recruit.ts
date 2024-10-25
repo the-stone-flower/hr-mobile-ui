@@ -127,6 +127,7 @@ export const addListItem = createAsyncThunk(`${namespace}/addListItem`, async (i
     workexp_info_list,
     social_info_list,
     skill_info_list,
+    pro_title_list,
     ...other
   } = items;
 

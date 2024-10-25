@@ -1,13 +1,50 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Input, Picker, DatePicker } from 'antd-mobile';
+import { Form, Input, Picker, DatePicker, CascadePicker, ImageUploader, Toast } from 'antd-mobile';
 import { AddCircleOutline } from 'antd-mobile-icons';
+import { useAppDispatch } from 'modules/store';
+import { uploadFile, validateFile } from 'modules/list/recruit';
+import { ImageUploadItem } from 'antd-mobile/es/components/image-uploader';
 import dayjs from 'dayjs';
 
 import type { TabProps } from './types';
 
+interface PickerOption {
+  label: string;
+  value: string | number;
+  children?: PickerOption[];
+}
+
 const FORM_SPACE = 'health_info';
 
 const HealthInfo: React.FC<TabProps> = ({ form, allOptions }) => {
+  const dispatch = useAppDispatch();
+
+  const [showDisFile, setShowDisFile] = useState(true);
+  const [showMilitaryDisFile, setShowMilitaryDisFile] = useState(true);
+
+  // 处理文件上传
+  const handleUpload = async (file: File) => {
+    if (!validateFile(file)) return null;
+
+    try {
+      const fileObject = {
+        raw: file,
+        name: file.name,
+      };
+
+      const result = await dispatch(uploadFile(fileObject)).unwrap();
+      return {
+        url: result.file,
+      };
+    } catch (error) {
+      Toast.show({
+        icon: 'fail',
+        content: '文件上传失败',
+      });
+      return null;
+    }
+  };
+
   const getDateDisplayText = (value: Date | null | undefined, formFieldName: string, defaultText: string) => {
     // FIXME 深层桥套类型，需要 formFieldName 可以是数组
     const dateValue = value || form.getFieldValue([FORM_SPACE, formFieldName]);
@@ -30,6 +67,34 @@ const HealthInfo: React.FC<TabProps> = ({ form, allOptions }) => {
       const actualValue = Array.isArray(formValue) ? formValue[0] : formValue;
       const option = options?.find((opt) => opt.value == actualValue);
       return option?.label || defaultText;
+    }
+
+    return defaultText;
+  };
+
+  // 辅助函数：获取级联选择器显示文本
+  const getPhysicalDisabilityDisplayText = (items: any[], formFieldName: string, defaultText: string) => {
+    if (items?.length && items[1]) {
+      return items.map((item) => item?.label).join(' - ');
+    }
+
+    const formValue = form.getFieldValue('physical_disability_cn');
+    if (formValue) {
+      return formValue;
+    }
+
+    return defaultText;
+  };
+
+  // 辅助函数：获取级联选择器显示文本
+  const getMilitaryDisabilityDisplayText = (items: any[], formFieldName: string, defaultText: string) => {
+    if (items?.length && items[1]) {
+      return items.map((item) => item?.label).join(' - ');
+    }
+
+    const formValue = form.getFieldValue('military_physical_disability_cn');
+    if (formValue) {
+      return formValue;
     }
 
     return defaultText;
@@ -64,6 +129,68 @@ const HealthInfo: React.FC<TabProps> = ({ form, allOptions }) => {
             )
           }
         </Picker>
+      </Form.Item>
+
+      <Form.Item
+        name={[FORM_SPACE, 'physical_disability']}
+        label='残疾类型'
+        trigger='onConfirm'
+        onClick={(e, pickerRef) => {
+          pickerRef.current?.open();
+        }}
+      >
+        <CascadePicker
+          title='残疾类型'
+          options={
+            allOptions.physical_disability_options?.options?.map((item: any, index: number) => ({
+              ...item,
+              value: String(index),
+            })) || []
+          }
+        >
+          {(items) => getPhysicalDisabilityDisplayText(items, 'physical_disability', '请选择残疾类型')}
+        </CascadePicker>
+      </Form.Item>
+
+      <Form.Item
+        name={[FORM_SPACE, 'disability_file']}
+        label='残疾证'
+        rules={[{ required: false, message: '请上传残疾证' }]}
+        extra='支持jpg、png格式，大小不超过10M'
+      >
+        <ImageUploader upload={handleUpload} maxCount={1} accept='image/*' />
+      </Form.Item>
+
+      <Form.Item
+        name={[FORM_SPACE, 'military_physical_disability']}
+        label='军人残疾类型'
+        trigger='onConfirm'
+        onClick={(e, pickerRef) => {
+          pickerRef.current?.open();
+        }}
+      >
+        <CascadePicker
+          title='军人残疾类型'
+          options={
+            allOptions.military_physical_disability_options?.options?.map((item: any, index: number) => ({
+              ...item,
+              value: String(index),
+            })) || []
+          }
+        >
+          {(items) =>
+            getMilitaryDisabilityDisplayText(items, 'military_physical_disability', '请选择军人残疾类型')
+          }
+        </CascadePicker>
+      </Form.Item>
+
+      <Form.Item
+        name={[FORM_SPACE, 'military_disability_file']}
+        label='军人残疾证'
+        rules={[{ required: false, message: '请上传军人残疾证' }]}
+        extra='支持jpg、png格式，大小不超过10M'
+      >
+        <ImageUploader upload={handleUpload} maxCount={1} accept='image/*' />
       </Form.Item>
 
       <div className='adm-list-item'>

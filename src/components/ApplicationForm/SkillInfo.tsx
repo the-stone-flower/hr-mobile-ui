@@ -206,7 +206,7 @@ const SkillInfo: React.FC<TabProps> = ({ form, allOptions }) => {
             label="附件"
           >
             <ImageUploader
-              value={getFileList(index)}
+              // value={getFileList(index)}
               upload={handleUpload}
               maxCount={1}
               accept="image/*,.pdf,.doc,.docx"

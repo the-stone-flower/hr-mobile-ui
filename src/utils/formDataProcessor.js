@@ -3,10 +3,18 @@ const deserArray = (value) => (Array.isArray(value) ? value.join('') : value);
 const serBoolean = (value) => value === 'true';
 const deserBoolean = (value) => (value === true ? 'true' : 'false');
 const serDate = (value) => (value ? new Date(value) : new Date());
+const serCascade = (value) => (value ? ['', value] : []);
+const serPhoto = (value) => (value ? [{ url: value }] : []);
+const deserCascade = (value) => (value && value.length ? value[1] : null);
+const deserPhoto = (value) => (value && value.length ? value[0].url : null);
 
 export const healthInfoFormDataProcessor = (formData) => {
   function toInput() {
     const health_type = serArray(formData.health_type || '');
+    const physical_disability = serCascade(formData.physical_disability);
+    const military_physical_disability = serCascade(formData.military_physical_disability);
+    const disability_file = serPhoto(formData.disability_file);
+    const military_disability_file = serPhoto(formData.military_disability_file);
     const allergy_history = formData.allergy_history?.map((item) => ({
       ...item,
       start_time: serDate(item.start_time),
@@ -17,12 +25,33 @@ export const healthInfoFormDataProcessor = (formData) => {
       start_time: serDate(item.start_time),
       end_time: serDate(item.end_time),
     }));
-    return { ...formData, health_type, allergy_history, past_medical_history };
+    return {
+      ...formData,
+      health_type,
+      allergy_history,
+      past_medical_history,
+      physical_disability,
+      military_physical_disability,
+      disability_file,
+      military_disability_file,
+    };
   }
 
   function toPayload() {
     const health_type = deserArray(formData.health_type);
-    return { ...formData, health_type: health_type || null };
+    const physical_disability = deserCascade(formData.physical_disability);
+    const military_physical_disability = deserCascade(formData.military_physical_disability);
+    const disability_file = deserPhoto(formData.disability_file);
+    const military_disability_file = deserPhoto(formData.military_disability_file);
+
+    return {
+      ...formData,
+      health_type: health_type || null,
+      physical_disability,
+      military_physical_disability,
+      disability_file,
+      military_disability_file,
+    };
   }
 
   return { toInput, toPayload };
