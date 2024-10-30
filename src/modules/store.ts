@@ -3,10 +3,12 @@ import { TypedUseSelectorHook, useSelector, useDispatch } from "react-redux";
 
 import options from "./options";
 import listRecruit from "./list/recruit";
+import listSalaryDetails from "./list/salary";
 
 const reducer = combineReducers({
   options,
   listRecruit,
+  listSalaryDetails,
 });
 
 export const store = configureStore({

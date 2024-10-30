@@ -172,7 +172,12 @@ const BasicInfo: React.FC<TabProps> = ({ form, allOptions, onIdNumberChange }) =
           datePickerRef.current?.open();
         }}
       >
-        <DatePicker min={new Date(1924, 0, 1)} max={new Date()} precision='day'>
+        <DatePicker
+          defaultValue={new Date(Date.now() - 30 * 365 * 24 * 60 * 60 * 1000)}
+          min={new Date(1924, 0, 1)}
+          max={new Date()}
+          precision='day'
+        >
           {(value) => getDateDisplayText(value, 'birthday', '请选择出生日期')}
         </DatePicker>
       </Form.Item>

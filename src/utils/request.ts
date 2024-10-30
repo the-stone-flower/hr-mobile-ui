@@ -1,10 +1,10 @@
-import axios from "axios";
-import { Toast } from "antd-mobile";
-import proxy from "../configs/host";
+import axios from 'axios';
+import { Toast } from 'antd-mobile';
+import proxy from '../configs/host';
 
-import { TOKEN_NAME } from "../configs";
+import { TOKEN_NAME } from '../configs';
 
-const env = import.meta.env.MODE || "development";
+const env = import.meta.env.MODE || 'development';
 const API_HOST = proxy[env].API;
 
 const SUCCESS_CODE = 0;
@@ -28,9 +28,9 @@ instance.interceptors.request.use(
     return config;
   },
   (error) => {
-    console.log("error:");
+    console.log('error:');
     return Promise.reject(error);
-  }
+  },
 );
 
 instance.interceptors.response.use(
@@ -39,34 +39,46 @@ instance.interceptors.response.use(
   (error) => {
     const { response } = error;
     if (response.status === 401) {
-      if (!String(window.location).includes("/login")) {
+      if (!String(window.location).includes('/login')) {
         Toast.show({
-          icon: "fail",
-          content: "登录超时，请重新登陆",
+          icon: 'fail',
+          content: '登录超时，请重新登陆',
         });
-        window.location.replace("/login");
+        window.location.replace('/login');
       }
     } else if (response.status === 403) {
       Toast.show({
-        icon: "fail",
-        content: "没有执行该操作的权限",
+        icon: 'fail',
+        content: '没有执行该操作的权限',
       });
     } else if (response.status === 400) {
-      Toast.show({
-        icon: "fail",
-        content: `请求出错，${JSON.stringify(response.data)}`,
-      });
-    } else {
-      if (response.config.url.includes("recruit/ext/detail_from_mobile")) {
-        return Promise.reject(error);
+      let errorMsg = '查询出错';
+      if (typeof response.data === 'object') {
+        errorMsg = `${Object.values(response.data)}`;
+      } else if (response.data) {
+        errorMsg = JSON.stringify(response.data);
       }
       Toast.show({
-        icon: "fail",
-        content: "请求出错, 请联系管理员",
+        icon: 'fail',
+        content: `${errorMsg}`,
+      });
+    } else {
+      if (response.config.url.includes('recruit/ext/detail_from_mobile')) {
+        return Promise.reject(error);
+      }
+      let errorMsg = '查询出错';
+      if (typeof response.data === 'object') {
+        errorMsg = `${Object.values(response.data)}`;
+      } else if (response.data) {
+        errorMsg = JSON.stringify(response.data);
+      }
+      Toast.show({
+        icon: 'fail',
+        content: `${errorMsg}`,
       });
     }
     return Promise.reject(error);
-  }
+  },
 );
 
 export default instance;

@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
-import { Form, Input, Radio, Picker, DatePicker, Button } from "antd-mobile";
-import { TabProps } from "./types";
-import dayjs from "dayjs";
+import React, { useState, useEffect } from 'react';
+import { Form, Input, Radio, Picker, DatePicker, Button } from 'antd-mobile';
+import { TabProps } from './types';
+import dayjs from 'dayjs';
 
 interface FamilyRecord {
   relative_name: string;
@@ -24,11 +24,11 @@ const FamilyInfo: React.FC<TabProps> = ({ form, allOptions }) => {
 
   // 监听表单值变化，设置初始值
   useEffect(() => {
-    const formFamilyList = form.getFieldValue("social_info_list");
+    const formFamilyList = form.getFieldValue('social_info_list');
     if (formFamilyList && Array.isArray(formFamilyList)) {
       setLocalFamilyList(formFamilyList);
     }
-  }, [form.getFieldValue("social_info_list")]);
+  }, [form.getFieldValue('social_info_list')]);
 
   // 处理添加家庭成员
   const handleAddFamily = () => {
@@ -46,7 +46,7 @@ const FamilyInfo: React.FC<TabProps> = ({ form, allOptions }) => {
     value: any,
     options: PickerOption[],
     defaultText: string,
-    formFieldPath?: string[]
+    formFieldPath?: string[],
   ) => {
     if (value?.[0]?.label) {
       return value[0].label;
@@ -66,99 +66,90 @@ const FamilyInfo: React.FC<TabProps> = ({ form, allOptions }) => {
   const getDateDisplayText = (
     value: Date | null | undefined,
     formFieldPath: string[],
-    defaultText: string
+    defaultText: string,
   ) => {
     const dateValue = value || form.getFieldValue(formFieldPath);
-    return dateValue ? dayjs(dateValue).format("YYYY-MM-DD") : defaultText;
+    return dateValue ? dayjs(dateValue).format('YYYY-MM-DD') : defaultText;
   };
 
   return (
     <>
       {localFamilyList.map((_: any, index: number) => (
         <div key={index}>
-          <h4 className="font-bold ml-2 my-2">家庭成员 {index + 1}</h4>
+          <h4 className='font-bold ml-2 my-2'>家庭成员 {index + 1}</h4>
           <Form.Item
-            name={["social_info_list", String(index), "relative_name"]}
-            label="成员姓名"
-            rules={[{ required: true, message: "请输入成员姓名" }]}
+            name={['social_info_list', String(index), 'relative_name']}
+            label='成员姓名'
+            rules={[{ required: true, message: '请输入成员姓名' }]}
           >
-            <Input placeholder="请输入成员姓名" />
+            <Input placeholder='请输入成员姓名' />
           </Form.Item>
 
           <Form.Item
-            name={["social_info_list", String(index), "relation"]}
-            label="与本人关系"
-            rules={[{ required: true, message: "请选择与本人关系" }]}
-            trigger="onConfirm"
+            name={['social_info_list', String(index), 'relation']}
+            label='与本人关系'
+            rules={[{ required: true, message: '请选择与本人关系' }]}
+            trigger='onConfirm'
             onClick={(e, pickerRef) => {
               pickerRef.current?.open();
             }}
           >
             <Picker columns={[allOptions.relation_options?.options || []]}>
               {(value) =>
-                getPickerDisplayText(
-                  value,
-                  allOptions.relation_options?.options || [],
-                  "请选择与本人关系",
-                  ["social_info_list", String(index), "relation"]
-                )
+                getPickerDisplayText(value, allOptions.relation_options?.options || [], '请选择与本人关系', [
+                  'social_info_list',
+                  String(index),
+                  'relation',
+                ])
               }
             </Picker>
           </Form.Item>
 
           <Form.Item
-            name={["social_info_list", String(index), "is_client_staff"]}
-            label="是否甲方单位员工"
-            rules={[{ required: true, message: "请选择是否为是否甲方单位员工" }]}
+            name={['social_info_list', String(index), 'is_client_staff']}
+            label='是否甲方单位员工'
+            rules={[{ required: true, message: '请选择是否为是否甲方单位员工' }]}
           >
             <Radio.Group>
-              <Radio value="true" className="mt-2">是</Radio>
-              <Radio value="false" className="mt-2">否</Radio>
+              <Radio value='true' className='mt-2'>
+                是
+              </Radio>
+              <Radio value='false' className='mt-2'>
+                否
+              </Radio>
             </Radio.Group>
           </Form.Item>
 
-          <Form.Item
-            name={["social_info_list", String(index), "occupation"]}
-            label="职业"
-          >
-            <Input placeholder="请输入职业" />
+          <Form.Item name={['social_info_list', String(index), 'occupation']} label='职业'>
+            <Input placeholder='请输入职业' />
           </Form.Item>
 
           <Form.Item
-            name={["social_info_list", String(index), "birthday"]}
-            label="出生年月"
-            trigger="onConfirm"
+            name={['social_info_list', String(index), 'birthday']}
+            label='出生年月'
+            trigger='onConfirm'
             onClick={(e, datePickerRef) => {
               datePickerRef.current?.open();
             }}
           >
             <DatePicker
+              defaultValue={new Date(Date.now() - 30 * 365 * 24 * 60 * 60 * 1000)}
               min={new Date(1924, 0, 1)}
               max={new Date()}
-              precision="day"
+              precision='day'
             >
               {(value) =>
-                getDateDisplayText(
-                  value,
-                  ["social_info_list", String(index), "birthday"],
-                  "请选择出生年月"
-                )
+                getDateDisplayText(value, ['social_info_list', String(index), 'birthday'], '请选择出生年月')
               }
             </DatePicker>
           </Form.Item>
 
-          <Form.Item
-            name={["social_info_list", String(index), "work_unit"]}
-            label="工作单位"
-          >
-            <Input placeholder="请输入工作单位" />
+          <Form.Item name={['social_info_list', String(index), 'work_unit']} label='工作单位'>
+            <Input placeholder='请输入工作单位' />
           </Form.Item>
 
-          <Form.Item
-            name={["social_info_list", String(index), "contact_way"]}
-            label="联系电话"
-          >
-            <Input placeholder="请输入联系电话" />
+          <Form.Item name={['social_info_list', String(index), 'contact_way']} label='联系电话'>
+            <Input placeholder='请输入联系电话' />
           </Form.Item>
 
           {/* <Form.Item
@@ -171,19 +162,15 @@ const FamilyInfo: React.FC<TabProps> = ({ form, allOptions }) => {
             </Radio.Group>
           </Form.Item> */}
 
-          <div className="flex justify-end mb-4">
-            <Button
-              color="danger"
-              size="small"
-              onClick={() => handleRemoveFamily(index)}
-            >
+          <div className='flex justify-end mb-4'>
+            <Button color='danger' size='small' onClick={() => handleRemoveFamily(index)}>
               删除此家庭成员
             </Button>
           </div>
         </div>
       ))}
-      <div className="flex justify-center mt-2">
-        <Button color="success" onClick={handleAddFamily}>
+      <div className='flex justify-center mt-2'>
+        <Button color='success' onClick={handleAddFamily}>
           + 添加家庭成员
         </Button>
       </div>
