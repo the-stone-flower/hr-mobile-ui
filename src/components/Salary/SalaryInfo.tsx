@@ -14,6 +14,8 @@ const SalaryInfo: React.FC<SalaryInfoProps> = ({ salaryDetails }) => {
   // 获取工资收入项（过滤掉0值项）
   const incomeItems = salaryDetails.extra_columns.columns.filter(
     (col) =>
+      col.value !== 0 &&
+      col.value !== null &&
       col.item !== '扣除小计' &&
       !col.item.includes('代扣') &&
       !['养老保险', '失业保险', '医疗保险', '工伤保险', '住房公积金'].includes(col.item),
@@ -48,10 +50,12 @@ const SalaryInfo: React.FC<SalaryInfoProps> = ({ salaryDetails }) => {
           {/* 背景渐变 */}
 
           <div className='absolute inset-0 bg-gradient-to-r from-transparent via-rose-50/50 to-transparent' />
-
+          <div className='flex justify-start mt-[-20px] ml-2 font-bold text-black'>
+            {salaryDetails.employee_name}
+          </div>
           {/* 内容 */}
           <div className='relative'>
-            <div className='text-gray-500 text-sm mb-2'>工资总计</div>
+            <div className='text-gray-500 text-sm mb-2'>实发工资</div>
             <div className='text-2xl font-bold text-black-500'>
               ¥ {formatAmount(salaryDetails.after_tax_salary)}
             </div>
@@ -62,7 +66,7 @@ const SalaryInfo: React.FC<SalaryInfoProps> = ({ salaryDetails }) => {
       {/* 工资总计卡片 */}
       <Card className='rounded-lg'>
         <div className='px-1 py-2'>
-          <div className='text-base font-medium text-gray-700 mb-3 pl-3'>税前工资</div>
+          <div className='text-base font-medium text-gray-700 mb-3 pl-3'>应发工资（含五险一金）</div>
           <div className='flex justify-between items-center px-3 py-2 bg-gray-50 rounded-lg'>
             <span>税前总额</span>
             <span className='font-medium text-gray-900'>¥ {formatAmount(salaryDetails.pre_tax_salary)}</span>
@@ -97,11 +101,11 @@ const SalaryInfo: React.FC<SalaryInfoProps> = ({ salaryDetails }) => {
       </Card>
 
       {/* 扣除项目卡片 */}
-      <Card className='rounded-lg'>
+      {/* <Card className='rounded-lg'>
         <div className='px-1 py-2'>
           <div className='text-base font-medium text-gray-700 mb-3 pl-3'>扣除项目</div>
           <div className='space-y-2'>
-            {/* 先显示具体扣除项 */}
+
             {deductionItems?.map((item, index) => (
               <div
                 key={item.value_id}
@@ -113,7 +117,7 @@ const SalaryInfo: React.FC<SalaryInfoProps> = ({ salaryDetails }) => {
               </div>
             ))}
 
-            {/* 最后显示扣除小计 */}
+
             {deductionTotal && (
               <div className='flex justify-between items-center px-3 py-3 border-t border-gray-100 mt-3'>
                 <span className='font-medium text-gray-700'>{deductionTotal.item}</span>
@@ -124,10 +128,10 @@ const SalaryInfo: React.FC<SalaryInfoProps> = ({ salaryDetails }) => {
             )}
           </div>
         </div>
-      </Card>
+      </Card> */}
 
       {/* 实发工资卡片 */}
-      <Card className='rounded-lg'>
+      {/* <Card className='rounded-lg'>
         <div className='px-1 py-2'>
           <div className='text-base font-medium text-gray-700 mb-3 pl-3'>实发工资</div>
           <div className='flex justify-between items-center px-3 py-3 bg-primary/5 rounded-lg'>
@@ -137,7 +141,7 @@ const SalaryInfo: React.FC<SalaryInfoProps> = ({ salaryDetails }) => {
             </span>
           </div>
         </div>
-      </Card>
+      </Card> */}
     </div>
   );
 };
