@@ -23,7 +23,7 @@ const ApplicationForm: React.FC = () => {
   const handleIdNumberChange = useCallback(
     async (idNumber: string) => {
       try {
-        const { health_info, legal_info, ...res } = await dispatch(
+        const { health_info, legal_info, recruit_info, ...res } = await dispatch(
           getListItemFromId({ id_number: idNumber }),
         ).unwrap();
 
@@ -31,6 +31,7 @@ const ApplicationForm: React.FC = () => {
           const processedData = filterNullValues(res);
           form.setFieldsValue({
             ...processedData,
+            recruit_info,
             health_info: healthInfoFormDataProcessor(health_info).toInput(),
             legal_info: legalInfoFormDataProcessor(legal_info).toInput(),
           });

@@ -1,11 +1,23 @@
-import React, { useState } from 'react';
-import { Form, Input, Radio, Picker, DatePicker, ImageUploader, Toast, CascadePicker } from 'antd-mobile';
+import React, { useState, useEffect } from 'react';
+import {
+  Form,
+  Input,
+  Radio,
+  Picker,
+  DatePicker,
+  ImageUploader,
+  Toast,
+  CascadePicker,
+  Space,
+  Button,
+  TextArea,
+} from 'antd-mobile';
+import { DeleteOutline } from 'antd-mobile-icons';
+import type { PickerValue, PickerValueExtend } from 'antd-mobile/es/components/picker';
 import { TabProps } from './types';
 import { useAppDispatch } from 'modules/store';
 import { uploadFile, validateFile } from 'modules/list/recruit';
-import { ImageUploadItem } from 'antd-mobile/es/components/image-uploader';
 import dayjs from 'dayjs';
-
 interface PickerOption {
   label: string;
   value: string | number;
@@ -14,8 +26,67 @@ interface PickerOption {
 
 const BasicInfo: React.FC<TabProps> = ({ form, allOptions, onIdNumberChange }) => {
   const dispatch = useAppDispatch();
-
   const [showMilitaryFile, setShowMilitaryFile] = useState(true);
+  const [areaCount, setAreaCount] = useState(1);
+  const [salaryRange, setSalaryRange] = useState<number[]>([]);
+  const areaData = allOptions?.work_place_options?.options || [];
+
+  // 意向地区选择器的显示状态
+  const [intentionVisible1, setIntentionVisible1] = useState(false);
+  const [intentionVisible2, setIntentionVisible2] = useState(false);
+  const [intentionVisible3, setIntentionVisible3] = useState(false);
+
+  // 前端管理的地址字段
+  const [intentionRegion1, setIntentionRegion1] = useState<string[]>(['四川省', '成都市', '锦江区']);
+  const [intentionRegion2, setIntentionRegion2] = useState<string[]>(['四川省', '成都市', '锦江区']);
+  const [intentionRegion3, setIntentionRegion3] = useState<string[]>(['四川省', '成都市', '锦江区']);
+
+  // 监听现居地址变化
+
+  // useEffect(() => {
+  //   handleAreaInitChange();
+  // }, [form.getFieldValue('recruit_info')]);
+
+  const handleAreaInitChange = () => {
+    console.log('inti');
+    const salary_range = form.getFieldValue(['recruit_info', 'salary_range']);
+    const intention_area = form.getFieldValue(['recruit_info', 'intention_area']);
+
+    if (salary_range) {
+      setSalaryRange(salary_range);
+    }
+    if (intention_area && intention_area.length) {
+      if (typeof intention_area[0] === 'string') {
+        setIntentionRegion1(intention_area[0]?.split(','));
+      }
+      if (typeof intention_area[1] === 'string') {
+        setIntentionRegion2(intention_area[1]?.split(','));
+      }
+      if (typeof intention_area[2] === 'string') {
+        setIntentionRegion3(intention_area[2]?.split(','));
+      }
+
+      setAreaCount(intention_area.length);
+    }
+  };
+  // 验证薪资范围
+  const validateSalaryRange = (rule: any, value: number[]) => {
+    if (!value || !Array.isArray(value)) {
+      return Promise.reject('请输入薪资范围');
+    }
+
+    const [min, max] = value;
+
+    if (!min || !max) {
+      return Promise.reject('请完整填写薪资范围');
+    }
+
+    if (min >= max) {
+      return Promise.reject('最低薪资不能大于或等于最高薪资');
+    }
+
+    return Promise.resolve();
+  };
 
   // 处理文件上传
   const handleUpload = async (file: File) => {
@@ -40,12 +111,58 @@ const BasicInfo: React.FC<TabProps> = ({ form, allOptions, onIdNumberChange }) =
     }
   };
 
-  // 获取个人照片的文件列表
-  const getPhotoFileList = (): ImageUploadItem[] => {
-    const photo = form.getFieldValue('pers_photo');
-    const url = Array.isArray(photo) ? photo?.[0]?.url : photo;
+  // 处理添加意向地区
+  const handleAddArea = () => {
+    if (areaCount < 3) {
+      setAreaCount(areaCount + 1);
+    } else {
+      Toast.show({
+        content: '最多添加3个意向地区',
+      });
+    }
+  };
 
-    return url ? [{ url: url }] : [];
+  // 处理删除意向地区
+  const handleDeleteArea = (index: number) => {
+    // 获取当前所有意向地区
+    const currentAreas = form.getFieldValue(['recruit_info', 'intention_area']) || [];
+
+    // 删除指定位置的地区
+    currentAreas.splice(index, 1);
+
+    // 更新表单数据
+    form.setFieldValue(['recruit_info', 'intention_area'], currentAreas);
+
+    // 重置对应的状态
+    if (index === 1) {
+      setIntentionRegion2(['四川省', '成都市', '锦江区']);
+    } else if (index === 2) {
+      setIntentionRegion3(['四川省', '成都市', '锦江区']);
+    }
+
+    setAreaCount(areaCount - 1);
+  };
+
+  // 处理意向地区选择
+  const handleIntentionRegionChange = (index: number) => (val: PickerValue[], extend: PickerValueExtend) => {
+    const currentAreas = form.getFieldValue(['recruit_info', 'intention_area']) || [];
+
+    currentAreas[index] = val;
+
+    // 更新对应的状态和表单数据
+    switch (index) {
+      case 0:
+        setIntentionRegion1(val as string[]);
+        break;
+      case 1:
+        setIntentionRegion2(val as string[]);
+        break;
+      case 2:
+        setIntentionRegion3(val as string[]);
+        break;
+    }
+
+    form.setFieldValue(['recruit_info', 'intention_area'], currentAreas);
   };
 
   // 辅助函数：获取选择器显示文本
@@ -76,22 +193,9 @@ const BasicInfo: React.FC<TabProps> = ({ form, allOptions, onIdNumberChange }) =
     return dateValue ? dayjs(dateValue).format('YYYY-MM-DD') : defaultText;
   };
 
-  // 辅助函数：获取级联选择器显示文本
-  const getCascadeDisplayText = (items: any[], formFieldName: string, defaultText: string) => {
-    if (items?.length && items[1]) {
-      return items.map((item) => item?.label).join(' - ');
-    }
-
-    const formValue = form.getFieldValue('physical_disability_cn');
-    if (formValue) {
-      return formValue;
-    }
-
-    return defaultText;
-  };
-
   return (
     <>
+      {/* 前面的表单项保持不变 */}
       <Form.Item name='name' label='姓名' rules={[{ required: true, message: '请输入姓名' }]}>
         <Input placeholder='请输入姓名' />
       </Form.Item>
@@ -106,6 +210,9 @@ const BasicInfo: React.FC<TabProps> = ({ form, allOptions, onIdNumberChange }) =
           onChange={(value) => {
             if (value.length >= 18) {
               onIdNumberChange?.(value);
+              setTimeout(() => {
+                handleAreaInitChange();
+              }, 2500);
             }
           }}
         />
@@ -273,7 +380,7 @@ const BasicInfo: React.FC<TabProps> = ({ form, allOptions, onIdNumberChange }) =
         </Radio.Group>
       </Form.Item>
 
-      {showMilitaryFile ? (
+      {showMilitaryFile && (
         <Form.Item
           name='discharge_military_file'
           label='退伍证'
@@ -282,30 +389,148 @@ const BasicInfo: React.FC<TabProps> = ({ form, allOptions, onIdNumberChange }) =
         >
           <ImageUploader upload={handleUpload} maxCount={1} accept='image/*' />
         </Form.Item>
-      ) : (
-        ''
       )}
 
-      {/* <Form.Item
-        name='physical_disability'
-        label='残疾类型'
-        trigger='onConfirm'
-        onClick={(e, pickerRef) => {
-          pickerRef.current?.open();
-        }}
+      <Form.Item
+        name={['recruit_info', 'salary_range']}
+        label='意向薪酬范围'
+        // rules={[{ required: true, message: '请输入薪酬范围' }, { validator: validateSalaryRange }]}
       >
-        <CascadePicker
-          title='残疾类型'
-          options={
-            allOptions.physical_disability_options?.options?.map((item: any, index: number) => ({
-              ...item,
-              value: String(index),
-            })) || []
-          }
-        >
-          {(items) => getCascadeDisplayText(items, 'physical_disability', '请选择残疾类型')}
-        </CascadePicker>
-      </Form.Item> */}
+        <Space direction='horizontal' className='w-full justify-between items-center'>
+          <Input
+            className='flex-1'
+            type='number'
+            placeholder='最低薪资'
+            value={String(salaryRange[0])}
+            onChange={(value) => {
+              const range = form.getFieldValue(['recruit_info', 'salary_range']) || [];
+              range[0] = value ? parseInt(value) : undefined;
+              setSalaryRange([range[0], salaryRange[1] || 0]);
+              form.setFieldValue(['recruit_info', 'salary_range'], range);
+            }}
+          />
+          <span className='text-gray-400 px-2'>至</span>
+          <Input
+            className='flex-1'
+            type='number'
+            value={String(salaryRange[1])}
+            placeholder='最高薪资'
+            onChange={(value) => {
+              const range = form.getFieldValue(['recruit_info', 'salary_range']) || [];
+              range[1] = value ? parseInt(value) : undefined;
+              setSalaryRange([salaryRange[0] || 0, range[1]]);
+              form.setFieldValue(['recruit_info', 'salary_range'], range);
+            }}
+          />
+          <span className='text-gray-400 pl-2'>元/月</span>
+        </Space>
+      </Form.Item>
+
+      <Form.Item label='意向地区'>
+        <div className='space-y-4'>
+          {/* 第一个意向地区 */}
+
+          <Form.Item
+            label='意向地区1'
+            trigger='onConfirm'
+            onClick={() => {
+              setIntentionVisible1(true);
+            }}
+          >
+            <CascadePicker
+              options={areaData}
+              visible={intentionVisible1}
+              onClose={() => {
+                setIntentionVisible1(false);
+              }}
+              value={intentionRegion1}
+              onConfirm={handleIntentionRegionChange(0)}
+            >
+              {(items) => {
+                if (items.every((item) => item === null)) {
+                  return '请选择意向地区1';
+                }
+                return intentionRegion1.join('/') || '请选择意向地区1';
+              }}
+            </CascadePicker>
+          </Form.Item>
+
+          {/* 第二个意向地区 */}
+          {areaCount >= 2 && (
+            <div className='flex items-center gap-2'>
+              <DeleteOutline className='text-red-500 flex-grow-0' onClick={() => handleDeleteArea(1)} />
+              <Form.Item
+                label='意向地区2'
+                className='flex-grow'
+                trigger='onConfirm'
+                onClick={() => {
+                  setIntentionVisible2(true);
+                }}
+              >
+                <CascadePicker
+                  options={areaData}
+                  visible={intentionVisible2}
+                  onClose={() => {
+                    setIntentionVisible2(false);
+                  }}
+                  value={intentionRegion2}
+                  onConfirm={handleIntentionRegionChange(1)}
+                >
+                  {(items) => {
+                    if (items.every((item) => item === null)) {
+                      return '请选择意向地区2';
+                    }
+                    return intentionRegion2.join('/') || '请选择意向地区2';
+                  }}
+                </CascadePicker>
+              </Form.Item>
+            </div>
+          )}
+
+          {/* 第三个意向地区 */}
+          {areaCount >= 3 && (
+            <div className='flex items-center gap-2'>
+              <DeleteOutline className='text-red-500 flex-grow-0' onClick={() => handleDeleteArea(2)} />
+              <Form.Item
+                label='意向地区3'
+                className='flex-grow'
+                trigger='onConfirm'
+                onClick={() => {
+                  setIntentionVisible3(true);
+                }}
+              >
+                <CascadePicker
+                  options={areaData}
+                  visible={intentionVisible3}
+                  onClose={() => {
+                    setIntentionVisible3(false);
+                  }}
+                  value={intentionRegion3}
+                  onConfirm={handleIntentionRegionChange(2)}
+                >
+                  {(items) => {
+                    if (items.every((item) => item === null)) {
+                      return '请选择意向地区3';
+                    }
+                    return intentionRegion3.join('/') || '请选择意向地区3';
+                  }}
+                </CascadePicker>
+              </Form.Item>
+            </div>
+          )}
+
+          {areaCount < 3 && (
+            <Button className='mt-2' block onClick={handleAddArea} size='small'>
+              + 添加意向地区
+            </Button>
+          )}
+        </div>
+      </Form.Item>
+
+      {/* 隐藏的意向地区数据 */}
+      <Form.Item name={['recruit_info', 'intention_area']} hidden>
+        <input type='hidden' />
+      </Form.Item>
     </>
   );
 };

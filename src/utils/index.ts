@@ -5,6 +5,9 @@ interface MatchItem {
   value: string | string[] | null;
 }
 
+export const ADDRESS_REGEX =
+  /(?<province>[^省]+省|[^自治区]+自治区|.+市)(?<city>[^自治州]+自治州|.+区划|[^市]+市|.+区)?(?<county>[^市]+市|[^县]+县|[^旗]+旗|.+区)?(?<town>[^区]+区|.+镇)?(?<village>.*)/;
+
 export function flattenMatchMap(match_map: MatchItem[]): string[] {
   return match_map
     .filter((item): item is MatchItem & { value: string | string[] } => item.value !== null)

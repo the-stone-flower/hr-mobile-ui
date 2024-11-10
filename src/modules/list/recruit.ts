@@ -128,6 +128,7 @@ export const addListItem = createAsyncThunk(`${namespace}/addListItem`, async (i
     social_info_list,
     skill_info_list,
     pro_title_list,
+    recruit_info,
     ...other
   } = items;
 
@@ -135,10 +136,22 @@ export const addListItem = createAsyncThunk(`${namespace}/addListItem`, async (i
     ...formatFormValue(other),
     health_info: healthInfoFormDataProcessor(health_info).toPayload(),
     legal_info: legalInfoFormDataProcessor(legal_info).toPayload(),
+    recruit_info: {
+      salary_range: recruit_info.salary_range,
+      intention_area: recruit_info.intention_area
+        .filter((item1: any) => item1)
+        .map((item2: any) => (Array.isArray(item2) ? item2.join(',') : item2)),
+    },
   };
 
   // 是列表的字段需要在这加上，进行列表里面的字段格式化
-  const listInfo = ['edu_info_list', 'workexp_info_list', 'social_info_list', 'skill_info_list', 'pro_title_list'];
+  const listInfo = [
+    'edu_info_list',
+    'workexp_info_list',
+    'social_info_list',
+    'skill_info_list',
+    'pro_title_list',
+  ];
   listInfo.forEach((key) => {
     if (items[key]) {
       payload[key] = formateListInfo(items[key]);
