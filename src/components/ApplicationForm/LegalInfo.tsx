@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Input, Radio, DatePicker } from 'antd-mobile';
+import { Form, Input, Radio, DatePicker, ImageUploader, Toast } from 'antd-mobile';
+import { uploadFile, validateFile } from 'modules/list/recruit';
 import { AddCircleOutline } from 'antd-mobile-icons';
+import { useAppDispatch } from 'modules/store';
 import dayjs from 'dayjs';
 
 import type { TabProps } from './types';
@@ -88,7 +90,31 @@ const CriminalRecord: React.FC<TabProps> = ({ form, allOptions }) => {
 };
 
 const LegalInfo: React.FC<TabProps> = ({ form, allOptions }) => {
+  const dispatch = useAppDispatch();
   const [toggleRecord, setToggleRecord] = useState(false);
+
+  // 处理文件上传
+  const handleUpload = async (file: File) => {
+    if (!validateFile(file)) return null;
+
+    try {
+      const fileObject = {
+        raw: file,
+        name: file.name,
+      };
+
+      const result = await dispatch(uploadFile(fileObject)).unwrap();
+      return {
+        url: result.file,
+      };
+    } catch (error) {
+      Toast.show({
+        icon: 'fail',
+        content: '文件上传失败',
+      });
+      return null;
+    }
+  };
 
   useEffect(() => {
     const isCri = form.getFieldValue([FORM_SPACE, 'is_criminal_record']);
@@ -106,6 +132,15 @@ const LegalInfo: React.FC<TabProps> = ({ form, allOptions }) => {
           <Radio value={HadCriminalRecord.No}>无</Radio>
           <Radio value={HadCriminalRecord.Yes}>有</Radio>
         </Radio.Group>
+      </Form.Item>
+
+      <Form.Item name={[FORM_SPACE, 'attach_file']} label='附件'>
+        <ImageUploader
+          // value={getFileList(index)}
+          upload={handleUpload}
+          maxCount={1}
+          accept='image/*,.pdf'
+        />
       </Form.Item>
 
       {toggleRecord && <CriminalRecord form={form} allOptions={allOptions} />}

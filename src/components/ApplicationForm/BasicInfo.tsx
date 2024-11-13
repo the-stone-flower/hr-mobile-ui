@@ -37,9 +37,9 @@ const BasicInfo: React.FC<TabProps> = ({ form, allOptions, onIdNumberChange }) =
   const [intentionVisible3, setIntentionVisible3] = useState(false);
 
   // 前端管理的地址字段
-  const [intentionRegion1, setIntentionRegion1] = useState<string[]>(['四川省', '成都市', '锦江区']);
-  const [intentionRegion2, setIntentionRegion2] = useState<string[]>(['四川省', '成都市', '锦江区']);
-  const [intentionRegion3, setIntentionRegion3] = useState<string[]>(['四川省', '成都市', '锦江区']);
+  const [intentionRegion1, setIntentionRegion1] = useState<string[]>([]);
+  const [intentionRegion2, setIntentionRegion2] = useState<string[]>([]);
+  const [intentionRegion3, setIntentionRegion3] = useState<string[]>([]);
 
   // 监听现居地址变化
 
@@ -135,9 +135,9 @@ const BasicInfo: React.FC<TabProps> = ({ form, allOptions, onIdNumberChange }) =
 
     // 重置对应的状态
     if (index === 1) {
-      setIntentionRegion2(['四川省', '成都市', '锦江区']);
+      setIntentionRegion2([]);
     } else if (index === 2) {
-      setIntentionRegion3(['四川省', '成都市', '锦江区']);
+      setIntentionRegion3([]);
     }
 
     setAreaCount(areaCount - 1);

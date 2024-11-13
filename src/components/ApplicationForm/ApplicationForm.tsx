@@ -91,7 +91,6 @@ const ApplicationForm: React.FC = () => {
       if (processedValues.physical_disability) {
         processedValues.physical_disability = processedValues.physical_disability[1];
       }
-
       console.log('Processed Form values:', processedValues);
 
       await dispatch(addListItem(processedValues)).unwrap();

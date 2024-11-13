@@ -33,10 +33,10 @@ export const formatFormValue = (form: any) => {
   Object.keys(form).forEach((key) => {
     let value = form[key];
     if (Array.isArray(value)) {
-      if (typeof value[0] === 'object' && value[0].url) {
+      if (value[0] && typeof value[0] === 'object' && value[0].url) {
         value = value[0].url;
       } else {
-        value = value.join(',');
+        value = value ? value.join(',') : '';
       }
     }
     if (value instanceof Date) {

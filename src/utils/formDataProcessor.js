@@ -60,6 +60,7 @@ export const healthInfoFormDataProcessor = (formData) => {
 export const legalInfoFormDataProcessor = (formData) => {
   function toInput() {
     const is_criminal_record = deserBoolean(formData.is_criminal_record);
+    const attach_file = serPhoto(formData.attach_file);
     const criminal_record = formData.criminal_record?.map((item) => ({
       ...item,
       start_time: serDate(item.start_time),
@@ -70,15 +71,16 @@ export const legalInfoFormDataProcessor = (formData) => {
       start_time: serDate(item.start_time),
       end_time: serDate(item.end_time),
     }));
-    return { ...formData, is_criminal_record, criminal_record, other_legal_record };
+    return { ...formData, is_criminal_record, criminal_record, other_legal_record, attach_file };
   }
 
   function toPayload() {
     const is_criminal_record = serBoolean(formData.is_criminal_record);
+    const attach_file = deserPhoto(formData.attach_file);
     if (!is_criminal_record) {
       formData.criminal_record = [];
     }
-    return { ...formData, is_criminal_record };
+    return { ...formData, is_criminal_record, attach_file };
   }
 
   return { toInput, toPayload };
