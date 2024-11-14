@@ -138,9 +138,11 @@ export const addListItem = createAsyncThunk(`${namespace}/addListItem`, async (i
     legal_info: legalInfoFormDataProcessor(legal_info).toPayload(),
     recruit_info: {
       salary_range: recruit_info.salary_range,
-      intention_area: recruit_info.intention_area
-        .filter((item1: any) => item1)
-        .map((item2: any) => (Array.isArray(item2) ? item2.join(',') : item2)),
+      intention_area: Array.isArray(recruit_info.intention_area)
+        ? recruit_info.intention_area
+            .filter((item1: any) => item1)
+            .map((item2: any) => (Array.isArray(item2) ? item2.join(',') : item2))
+        : [],
     },
   };
 

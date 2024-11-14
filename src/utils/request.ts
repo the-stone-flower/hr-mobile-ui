@@ -53,8 +53,11 @@ instance.interceptors.response.use(
       });
     } else if (response.status === 400) {
       let errorMsg = '查询出错';
-      if (typeof response.data === 'object') {
+      if (response.data && typeof response.data === 'object') {
         errorMsg = `${Object.values(response.data)}`;
+        if (typeof Object.values(response.data)[0] === 'object') {
+          errorMsg = JSON.stringify(Object.values(response.data));
+        }
       } else if (response.data) {
         errorMsg = JSON.stringify(response.data);
       }
