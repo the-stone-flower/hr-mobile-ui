@@ -86,7 +86,7 @@ export const tabConfigs: TabConfig[] = [
   },
   {
     key: '9',
-    title: '法律信息',
+    title: '征信记录法律信息',
     component: LegalInfo,
     fields: ['legal_info'],
   },
