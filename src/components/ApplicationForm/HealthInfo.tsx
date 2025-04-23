@@ -102,11 +102,19 @@ const HealthInfo: React.FC<TabProps> = ({ form, allOptions }) => {
 
   return (
     <>
-      <Form.Item name={[FORM_SPACE, 'height']} label='身高/米'>
-        <Input placeholder='请输入身高' />
+      <Form.Item
+        name={[FORM_SPACE, 'height']}
+        label='身高'
+        extra={<div style={{ position: 'absolute', right: '44px', top: '45px' }}>米</div>}
+      >
+        <Input type='number' style={{ width: '100%' }} placeholder='请输入身高' />
       </Form.Item>
-      <Form.Item name={[FORM_SPACE, 'weight']} label='体重/公斤'>
-        <Input placeholder='请输入体重' />
+      <Form.Item
+        name={[FORM_SPACE, 'weight']}
+        label='体重'
+        extra={<div style={{ position: 'absolute', right: '44px', top: '45px' }}>公斤</div>}
+      >
+        <Input type='number' placeholder='请输入体重' />
       </Form.Item>
       <Form.Item name={[FORM_SPACE, 'vision']} label='视力'>
         <Input placeholder='请输入视力' />

@@ -192,3 +192,7 @@ html {
   align-items: center;
   height: 100%;
 }
+
+.adm-list-item-content-extra {
+  padding-left: 0px;
+}
