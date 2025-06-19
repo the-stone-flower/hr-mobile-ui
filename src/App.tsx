@@ -6,6 +6,8 @@ import jiayouzhan from './assets/jiayouzhan.png';
 import ApplicationForm from 'components/ApplicationForm/ApplicationForm';
 import HomePage from './components/HomePage';
 import SalaryDetails from 'components/Salary/SalaryDetails';
+import JobList from './components/Job/JobList'; // 引入 JobList
+import JobDetail from './components/Job/JobDetail'; // 引入 JobDetail
 
 // 自定义 Hook 用于设置页面标题
 const usePageTitle = () => {
@@ -54,6 +56,8 @@ const App: React.FC = () => {
             <Route path='/' element={<HomePage />} />
             <Route path='/apply' element={<ApplicationForm />} />
             <Route path='/salary' element={<SalaryDetails />} />
+            <Route path='/jobs' element={<JobList />} />
+            <Route path='/job/:id' element={<JobDetail />} />
           </Routes>
         </Layout>
       </Router>

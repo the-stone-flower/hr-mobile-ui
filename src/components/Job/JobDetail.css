@@ -1,0 +1,214 @@
+/* src/components/Job/JobDetail.css */
+.job-detail-container {
+  min-height: 100vh;
+  background-color: #f8f9fa;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 70px; /* 为底部按钮留出空间 */
+}
+
+.adm-nav-bar {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  --title-text-color: white;
+  --text-color: white;
+  --back-arrow-color: white;
+}
+
+.content-area {
+  padding: 10px 15px;
+  flex-grow: 1;
+}
+
+.job-header-card {
+  margin-bottom: 15px;
+  border-radius: 12px;
+  box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+  --padding-left: 16px;
+  --padding-right: 16px;
+  --padding-top: 16px;
+  --padding-bottom: 16px;
+}
+
+.job-detail-title {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 10px;
+}
+
+.company-detail-info {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.company-detail-logo {
+  width: 50px;
+  height: 50px;
+  border-radius: 8px;
+  object-fit: cover;
+  margin-right: 12px;
+  border: 1px solid #eee;
+}
+
+.company-detail-name {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #2c3e50;
+}
+
+.salary-highlight {
+  /* background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%); */
+  color: #000;
+  /* padding: 10px 15px; */
+  border-radius: 20px;
+  text-align: center;
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin: 10px 0;
+  display: inline-block; /* 适应内容宽度 */
+}
+
+/* 新增的 salary-negotiable-badge 样式，用于面议的职位 */
+.salary-negotiable-badge {
+  background-color: #e0e0e0; /* 浅灰色背景 */
+  color: #666; /* 深灰色文字 */
+  padding: 2px 10px;
+  border-radius: 20px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 15px 0;
+  display: inline-flex; /* 使图标和文字在一行并居中 */
+  align-items: center;
+  gap: 8px; /* 图标和文字的间距 */
+}
+
+
+.job-tags.detail-tags .adm-tag {
+  font-size: 0.85rem;
+  padding: 5px 10px;
+  border-radius: 20px;
+}
+
+.job-tags.detail-tags .location-tag {
+  background-color: var(--adm-color-primary-light);
+  color: var(--adm-color-primary);
+}
+
+.job-tags.detail-tags .icon {
+  margin-right: 5px;
+}
+
+.content-section {
+  margin-bottom: 15px;
+  border-radius: 12px;
+  box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+  --padding-left: 0;
+  --padding-right: 0;
+  --padding-top: 0;
+  --padding-bottom: 0;
+}
+
+.section-header {
+  background: #f8f9fa;
+  padding: 15px 16px;
+  border-bottom: 1px solid #e9ecef;
+  font-weight: 600;
+  color: #2c3e50;
+  display: flex;
+  align-items: center;
+}
+
+.section-header .icon {
+  margin-right: 8px;
+  color: #667eea;
+}
+
+.section-content {
+  padding: 16px;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.info-label {
+  font-size: 0.85rem;
+  color: #6c757d;
+  margin-bottom: 5px;
+}
+
+.info-value {
+  font-weight: 500;
+  color: #2c3e50;
+}
+
+.job-description-content p {
+  line-height: 1.6;
+  color: #333;
+}
+
+.benefits-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); /* 调整列宽以适应小屏幕 */
+  gap: 10px;
+  text-align: center;
+}
+
+.benefit-item {
+  background: #f8f9fa;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.benefit-icon {
+  color: #667eea;
+  font-size: 1.5rem;
+  margin-bottom: 5px;
+}
+
+.bottom-actions {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  padding: 15px;
+  box-shadow: 0 -2px 20px rgba(0,0,0,0.1);
+  z-index: 1000;
+}
+
+.loading-container, .error-container, .empty-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 45px); /* 减去NavBar的高度 */
+  text-align: center;
+  color: #6c757d;
+}
+
+.loading-container .adm-dot-loading {
+  font-size: 30px;
+}
+
+.error-container .adm-empty, .empty-container .adm-empty {
+  margin-bottom: 20px;
+}

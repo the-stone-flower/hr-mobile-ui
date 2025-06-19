@@ -1,0 +1,85 @@
+/* src/components/Job/JobCard.css */
+.job-card {
+  margin-bottom: 15px;
+  border-radius: 12px;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  overflow: hidden;
+  --padding-left: 16px;
+  --padding-right: 16px;
+  --padding-top: 16px;
+  --padding-bottom: 16px;
+}
+
+.job-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 25px rgba(0, 0, 0, 0.1);
+}
+
+.job-card .adm-card-body {
+  padding: 16px;
+}
+
+.job-card-header {
+  margin-bottom: 10px;
+}
+
+.job-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 5px;
+  line-height: 1.4;
+}
+
+.company-name {
+  color: #667eea;
+  font-size: 0.9rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+}
+
+.company-name .icon {
+  margin-right: 5px;
+}
+
+.job-tags .adm-tag {
+  font-size: 0.8rem;
+  padding: 3px 8px;
+  border-radius: 15px;
+}
+
+.job-tags .salary-tag {
+  background-color: var(--adm-color-warning-light);
+  color: var(--adm-color-warning);
+}
+
+.job-tags .location-tag {
+  background-color: var(--adm-color-primary-light);
+  color: var(--adm-color-primary);
+}
+
+.job-tags .icon {
+  margin-right: 3px;
+}
+
+.job-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 15px;
+  padding-top: 10px;
+  border-top: 1px solid #f1f3f4;
+  font-size: 0.8rem;
+  color: #6c757d;
+}
+
+.job-meta .job-date {
+  display: flex;
+  align-items: center;
+}
+
+.job-meta .icon {
+  margin-right: 5px;
+}

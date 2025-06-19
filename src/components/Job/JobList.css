@@ -1,0 +1,43 @@
+/* src/components/Job/JobList.css */
+.job-list-container {
+  min-height: 100vh;
+  background-color: #f8f9fa;
+  display: flex;
+  flex-direction: column;
+}
+
+.adm-nav-bar {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  --title-text-color: white;
+  --text-color: white;
+}
+
+.search-sticky-container {
+  position: sticky;
+  top: 45px; /* Adjust based on NavBar height */
+  z-index: 999;
+  background-color: #f8f9fa; /* Match body background */
+  padding: 10px 15px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  margin-bottom: -5px; /* 让搜索框和列表衔接更自然 */
+}
+
+.job-search-bar .adm-search-bar-input-box {
+  background-color: white;
+  border-radius: 8px;
+}
+
+.job-cards-list {
+  padding: 10px 15px;
+  background-color: transparent; /* 列表背景透明，显示body背景 */
+}
+
+.job-cards-list .adm-list-item {
+  padding: 0; /* 移除默认的列表项padding */
+  --border-bottom: none;
+}
