@@ -66,18 +66,18 @@ export const tabConfigs: TabConfig[] = [
     component: FamilyInfo,
     fields: ['social_info_list'],
   },
-  {
-    key: "6",
-    title: "职业资格",
-    component: TitleExperience,
-    fields: ["pro_title_list"],
-  },
-  {
-    key: '7',
-    title: '技能信息',
-    component: SkillInfo,
-    fields: ['skill_info_list'],
-  },
+  // {
+  //   key: "6",
+  //   title: "职业资格",
+  //   component: TitleExperience,
+  //   fields: ["pro_title_list"],
+  // },
+  // {
+  //   key: '7',
+  //   title: '技能信息',
+  //   component: SkillInfo,
+  //   fields: ['skill_info_list'],
+  // },
   {
     key: '8',
     title: '健康信息',

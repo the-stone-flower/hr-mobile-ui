@@ -312,6 +312,93 @@ const BasicInfo: React.FC<TabProps> = ({ form, allOptions, onIdNumberChange }) =
         <Input placeholder='请输入籍贯' />
       </Form.Item>
 
+      {/* 临时需求 */}
+      <Form.Item name='deposit_bank' label='开户行' rules={[{ required: true, message: '请选择开户行' }]}>
+        <Input placeholder='请输入开户行' />
+      </Form.Item>
+
+      <Form.Item name='bank_account' label='银行卡号' rules={[{ required: true, message: '请选择银行卡号' }]}>
+        <Input placeholder='请输入银行卡号' />
+      </Form.Item>
+
+      <Form.Item
+        name='id_type'
+        label='户籍类型'
+        trigger='onConfirm'
+        onClick={(e, pickerRef) => {
+          pickerRef.current?.open();
+        }}
+        rules={[{ required: true, message: '请选择户籍类型' }]}
+      >
+        <Picker columns={[allOptions.id_type_options?.options || []]}>
+          {(value) =>
+            getPickerDisplayText(
+              value,
+              allOptions.id_type_options?.options || [],
+              '请选择户籍类型',
+              'id_type',
+            )
+          }
+        </Picker>
+      </Form.Item>
+
+      <Form.Item
+        name='gas_station_name'
+        label='所在加油站名称'
+        rules={[{ required: true, message: '请选择所在加油站名称' }]}
+      >
+        <Input placeholder='请输入所在加油站名称' />
+      </Form.Item>
+
+      <Form.Item
+        name='skill_level'
+        label='技能等级'
+        trigger='onConfirm'
+        onClick={(e, pickerRef) => {
+          pickerRef.current?.open();
+        }}
+        rules={[{ required: false, message: '请选择技能等级' }]}
+      >
+        <Picker columns={[allOptions.skill_levels_options?.options || []]}>
+          {(value) =>
+            getPickerDisplayText(
+              value,
+              allOptions.skill_levels_options?.options || [],
+              '请选择技能等级',
+              'skill_level',
+            )
+          }
+        </Picker>
+      </Form.Item>
+      <Form.Item
+        name='job_title_type'
+        label='职业资格类型'
+        rules={[{ required: false, message: '请选择职业资格类型' }]}
+      >
+        <Input placeholder='请输入职业资格类型' />
+      </Form.Item>
+
+      <Form.Item
+        name='job_title_level'
+        label='职业资格等级'
+        trigger='onConfirm'
+        onClick={(e, pickerRef) => {
+          pickerRef.current?.open();
+        }}
+        rules={[{ required: false, message: '请选择职业资格等级' }]}
+      >
+        <Picker columns={[allOptions.job_title_level_options?.options || []]}>
+          {(value) =>
+            getPickerDisplayText(
+              value,
+              allOptions.job_title_level_options?.options || [],
+              '请选择职业资格等级',
+              'job_title_level',
+            )
+          }
+        </Picker>
+      </Form.Item>
+
       <Form.Item
         name='political'
         label='政治面貌'
