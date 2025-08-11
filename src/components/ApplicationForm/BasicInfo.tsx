@@ -221,7 +221,7 @@ const BasicInfo: React.FC<TabProps> = ({ form, allOptions, onIdNumberChange }) =
       <Form.Item
         name='id_front_file'
         label='身份证正面'
-        rules={[{ required: false, message: '请上传身份证正面' }]}
+        rules={[{ required: true, message: '请上传身份证正面' }]}
         extra='支持jpg、png格式，大小不超过10M'
       >
         <ImageUploader upload={handleUpload} maxCount={1} accept='image/*' />
@@ -230,14 +230,14 @@ const BasicInfo: React.FC<TabProps> = ({ form, allOptions, onIdNumberChange }) =
       <Form.Item
         name='id_back_file'
         label='身份证背面'
-        rules={[{ required: false, message: '请上传身份证背面' }]}
+        rules={[{ required: true, message: '请上传身份证背面' }]}
         extra='支持jpg、png格式，大小不超过10M'
       >
         <ImageUploader upload={handleUpload} maxCount={1} accept='image/*' />
       </Form.Item>
 
       <Form.Item name='contact_way' label='手机号' rules={[{ required: true, message: '请输入手机号' }]}>
-        <Input placeholder='请输入手机号' />
+        <Input placeholder='需提供已同时绑定微信和支付宝的电话号码' />
       </Form.Item>
 
       <Form.Item
@@ -261,7 +261,7 @@ const BasicInfo: React.FC<TabProps> = ({ form, allOptions, onIdNumberChange }) =
         </Picker>
       </Form.Item>
 
-      <Form.Item name='gender' label='性别'>
+      <Form.Item name='gender' label='性别' rules={[{ required: true, message: '请选择性别' }]}>
         <Radio.Group>
           {allOptions.gender_options?.options?.map((option: any) => (
             <Radio key={option.value} value={option.value} className='mt-2'>
@@ -275,6 +275,7 @@ const BasicInfo: React.FC<TabProps> = ({ form, allOptions, onIdNumberChange }) =
         name='birthday'
         label='出生日期'
         trigger='onConfirm'
+        rules={[{ required: true, message: '请选择出生日期' }]}
         onClick={(e, datePickerRef) => {
           datePickerRef.current?.open();
         }}
@@ -289,7 +290,7 @@ const BasicInfo: React.FC<TabProps> = ({ form, allOptions, onIdNumberChange }) =
         </DatePicker>
       </Form.Item>
 
-      <Form.Item name='age' label='年龄'>
+      <Form.Item name='age' label='年龄' rules={[{ required: true, message: '请填写年龄' }]}>
         <Input type='number' placeholder='请输入年龄' />
       </Form.Item>
 
@@ -297,6 +298,7 @@ const BasicInfo: React.FC<TabProps> = ({ form, allOptions, onIdNumberChange }) =
         name='nation'
         label='民族'
         trigger='onConfirm'
+        rules={[{ required: true, message: '请选择民族' }]}
         onClick={(e, pickerRef) => {
           pickerRef.current?.open();
         }}
@@ -308,7 +310,7 @@ const BasicInfo: React.FC<TabProps> = ({ form, allOptions, onIdNumberChange }) =
         </Picker>
       </Form.Item>
 
-      <Form.Item name='native_place' label='籍贯'>
+      <Form.Item name='native_place' label='籍贯' rules={[{ required: true, message: '请填写籍贯' }]}>
         <Input placeholder='请输入籍贯' />
       </Form.Item>
 
@@ -403,6 +405,7 @@ const BasicInfo: React.FC<TabProps> = ({ form, allOptions, onIdNumberChange }) =
         name='political'
         label='政治面貌'
         trigger='onConfirm'
+        rules={[{ required: true, message: '请选择政治面貌' }]}
         onClick={(e, pickerRef) => {
           pickerRef.current?.open();
         }}
@@ -420,21 +423,32 @@ const BasicInfo: React.FC<TabProps> = ({ form, allOptions, onIdNumberChange }) =
       </Form.Item>
 
       <Form.Item
-        name='join_party_date'
-        label='入党时间'
-        trigger='onConfirm'
-        onClick={(e, datePickerRef) => {
-          datePickerRef.current?.open();
-        }}
+        noStyle
+        shouldUpdate={(prevValues, curValues) => prevValues.political !== curValues.political}
       >
-        <DatePicker min={new Date(1924, 0, 1)} max={new Date()} precision='day'>
-          {(value) => getDateDisplayText(value, 'join_party_date', '请选择入党时间')}
-        </DatePicker>
+        {({ getFieldValue }) =>
+          String(getFieldValue('political')) === '1' ? (
+            <Form.Item
+              name='join_party_date'
+              label='入党时间'
+              trigger='onConfirm'
+              rules={[{ required: true, message: '请选择入党时间' }]}
+              onClick={(e, datePickerRef) => {
+                datePickerRef.current?.open();
+              }}
+            >
+              <DatePicker min={new Date(1924, 0, 1)} max={new Date()} precision='day'>
+                {(value) => getDateDisplayText(value, 'join_party_date', '请选择入党时间')}
+              </DatePicker>
+            </Form.Item>
+          ) : null
+        }
       </Form.Item>
 
       <Form.Item
         name='marital_status'
         label='婚姻状况'
+        rules={[{ required: true, message: '请选择婚姻状况' }]}
         trigger='onConfirm'
         onClick={(e, pickerRef) => {
           pickerRef.current?.open();
@@ -452,7 +466,11 @@ const BasicInfo: React.FC<TabProps> = ({ form, allOptions, onIdNumberChange }) =
         </Picker>
       </Form.Item>
 
-      <Form.Item name='is_veteran' label='是否退役军人'>
+      <Form.Item
+        name='is_veteran'
+        label='是否退役军人'
+        rules={[{ required: true, message: '请选择是否退役军人' }]}
+      >
         <Radio.Group
           onChange={(value) => {
             setShowMilitaryFile(value === 'true' ? true : false);
@@ -471,7 +489,7 @@ const BasicInfo: React.FC<TabProps> = ({ form, allOptions, onIdNumberChange }) =
         <Form.Item
           name='discharge_military_file'
           label='退伍证'
-          rules={[{ required: false, message: '请上传退伍证' }]}
+          rules={[{ required: true, message: '请上传退伍证' }]}
           extra='支持jpg、png格式，大小不超过10M'
         >
           <ImageUploader upload={handleUpload} maxCount={1} accept='image/*' />

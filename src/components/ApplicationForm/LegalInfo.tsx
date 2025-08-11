@@ -123,7 +123,11 @@ const LegalInfo: React.FC<TabProps> = ({ form, allOptions }) => {
 
   return (
     <>
-      <Form.Item name={[FORM_SPACE, 'is_criminal_record']} label='有无犯罪记录'>
+      <Form.Item
+        name={[FORM_SPACE, 'is_criminal_record']}
+        label='有无犯罪记录'
+        rules={[{ required: true, message: '请选择有无犯罪记录' }]}
+      >
         <Radio.Group
           onChange={(value) => {
             setToggleRecord(value === HadCriminalRecord.Yes);
@@ -134,7 +138,11 @@ const LegalInfo: React.FC<TabProps> = ({ form, allOptions }) => {
         </Radio.Group>
       </Form.Item>
 
-      <Form.Item name={[FORM_SPACE, 'attach_file']} label='附件'>
+      <Form.Item
+        name={[FORM_SPACE, 'attach_file']}
+        label='附件'
+        rules={[{ required: true, message: '请上传附件' }]}
+      >
         <ImageUploader
           // value={getFileList(index)}
           upload={handleUpload}

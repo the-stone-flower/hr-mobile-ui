@@ -68,8 +68,8 @@ const OtherInfo: React.FC<TabProps> = ({ form }) => {
       <Form.Item
         name="pers_photo"
         label="个人照片"
-        rules={[{ required: false, message: "请上传个人照片" }]}
-        extra="支持jpg、png格式，大小不超过10M"
+        rules={[{ required: true, message: "请上传个人照片" }]}
+        extra="支持jpg、png格式，大小不超过10M（证件照）"
       >
         <ImageUploader
           // value={getPhotoFileList()}

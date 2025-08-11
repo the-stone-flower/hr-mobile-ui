@@ -146,7 +146,7 @@ const ContactInfo: React.FC<TabProps> = ({ form, allOptions }) => {
         <Input placeholder='请输入电子邮箱' />
       </Form.Item>
 
-      <Form.Item name='wechat' label='微信号'>
+      <Form.Item name='wechat' label='微信号' rules={[{ required: true, message: '请填入微信号' }]}>
         <Input placeholder='请输入微信号' />
       </Form.Item>
 
@@ -154,6 +154,7 @@ const ContactInfo: React.FC<TabProps> = ({ form, allOptions }) => {
       <Form.Item
         label='现居地区'
         trigger='onConfirm'
+        rules={[{ required: true, message: '请选择现居地区' }]}
         onClick={() => {
           setFamilyVisible(true);
         }}
@@ -179,9 +180,9 @@ const ContactInfo: React.FC<TabProps> = ({ form, allOptions }) => {
       </Form.Item>
 
       {/* 现居地址 - 详细地址 */}
-      <Form.Item label='详细地址'>
+      <Form.Item label='详细地址' rules={[{ required: true, message: '请输入详细地址' }]}>
         <TextArea
-          placeholder='请输入详细地址（如街道、楼牌号等）'
+          placeholder='请输入详细地址（需精确到门牌号）'
           value={familyLocation}
           onChange={handleFamilyLocationChange}
         />
@@ -192,7 +193,7 @@ const ContactInfo: React.FC<TabProps> = ({ form, allOptions }) => {
         <input type='hidden' />
       </Form.Item>
 
-      <Form.Item name='post_code' label='邮政编码'>
+      <Form.Item name='post_code' label='邮政编码' rules={[{ required: true, message: '请输入邮政编码' }]}>
         <Input placeholder='请输入邮政编码' />
       </Form.Item>
 
@@ -200,6 +201,7 @@ const ContactInfo: React.FC<TabProps> = ({ form, allOptions }) => {
       <Form.Item
         label='固定通信地址'
         trigger='onConfirm'
+        rules={[{ required: true, message: '请输入固定通信地址' }]}
         onClick={() => {
           setPostalVisible(true);
         }}
@@ -224,9 +226,9 @@ const ContactInfo: React.FC<TabProps> = ({ form, allOptions }) => {
       </Form.Item>
 
       {/* 固定通信地址 - 详细地址 */}
-      <Form.Item label='详细地址'>
+      <Form.Item label='详细地址' rules={[{ required: true, message: '请输入详细地址' }]}>
         <TextArea
-          placeholder='请输入详细地址（如街道、楼牌号等）'
+          placeholder='请输入详细地址（需精确到门牌号）'
           value={postalLocation}
           onChange={handlePostalLocationChange}
         />
@@ -237,21 +239,34 @@ const ContactInfo: React.FC<TabProps> = ({ form, allOptions }) => {
         <TextArea placeholder='请输入固定通信地址' />
       </Form.Item>
 
-      <Form.Item name='emergency_contact' label='紧急联系人'>
+      <Form.Item
+        name='emergency_contact'
+        label='紧急联系人'
+        rules={[{ required: true, message: '请输入紧急联系人' }]}
+      >
         <Input placeholder='请输入紧急联系人' />
       </Form.Item>
 
-      <Form.Item name='emergency_contact_relation' label='紧急联系人关系'>
+      <Form.Item
+        name='emergency_contact_relation'
+        label='紧急联系人关系'
+        rules={[{ required: true, message: '请输入紧急联系人关系' }]}
+      >
         <Input placeholder='请输入紧急联系人关系' />
       </Form.Item>
 
-      <Form.Item name='emergency_contact_way' label='紧急联系人电话'>
+      <Form.Item
+        name='emergency_contact_way'
+        label='紧急联系人电话'
+        rules={[{ required: true, message: '请输入紧急联系人电话' }]}
+      >
         <Input placeholder='请输入紧急联系人电话' />
       </Form.Item>
 
       {/* 紧急联系人地址 - 省市区选择 */}
       <Form.Item
         label='紧急联系人地区'
+        rules={[{ required: true, message: '请输入紧急联系人地区' }]}
         trigger='onConfirm'
         onClick={() => {
           setEmergencyVisible(true);
@@ -277,7 +292,7 @@ const ContactInfo: React.FC<TabProps> = ({ form, allOptions }) => {
       </Form.Item>
 
       {/* 紧急联系人地址 - 详细地址 */}
-      <Form.Item label='紧急联系人详细地址'>
+      <Form.Item label='紧急联系人详细地址' rules={[{ required: true, message: '请输入紧急联系人详细地址' }]}>
         <TextArea
           placeholder='请输入详细地址（如街道、楼牌号等）'
           value={emergencyLocation}

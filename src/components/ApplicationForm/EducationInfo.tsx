@@ -128,7 +128,7 @@ const EducationInfo: React.FC<TabProps> = ({ form, allOptions }) => {
           <Form.Item
             name={['edu_info_list', String(index), 'education_type']}
             label='学历类型'
-            rules={[{ required: false, message: '请选择学历类型' }]}
+            rules={[{ required: true, message: '请选择学历类型' }]}
             trigger='onConfirm'
             onClick={(e, pickerRef) => {
               pickerRef.current?.open();
@@ -155,31 +155,84 @@ const EducationInfo: React.FC<TabProps> = ({ form, allOptions }) => {
           </Form.Item>
 
           <Form.Item
-            name={['edu_info_list', String(index), 'degree']}
-            label='学位'
-            trigger='onConfirm'
-            onClick={(e, pickerRef) => {
-              pickerRef.current?.open();
-            }}
+            noStyle
+            shouldUpdate={(prevValues, curValues) => prevValues.edu_info_list !== curValues.edu_info_list}
           >
-            <Picker columns={[allOptions.degree_options?.options || []]}>
-              {(value) =>
-                getPickerDisplayText(value, allOptions.degree_options?.options || [], '请选择学位', [
-                  'edu_info_list',
-                  String(index),
-                  'degree',
-                ])
-              }
-            </Picker>
+            {({ getFieldValue }) => {
+              console.log(getFieldValue('edu_info_list')?.[index]?.education?.[0])
+              return Number(getFieldValue('edu_info_list')?.[index]?.education?.[0]) > 4 ? (
+                <Form.Item
+                  name={['edu_info_list', String(index), 'degree']}
+                  label='学位'
+                  rules={[{ required: true, message: '请选择学位' }]}
+                  trigger='onConfirm'
+                  onClick={(e, pickerRef) => {
+                    pickerRef.current?.open();
+                  }}
+                >
+                  <Picker columns={[allOptions.degree_options?.options || []]}>
+                    {(value) =>
+                      getPickerDisplayText(value, allOptions.degree_options?.options || [], '请选择学位', [
+                        'edu_info_list',
+                        String(index),
+                        'degree',
+                      ])
+                    }
+                  </Picker>
+                </Form.Item>
+              ) : (
+                <Form.Item
+                  name={['edu_info_list', String(index), 'degree']}
+                  label='学位'
+                  rules={[{ required: false, message: '请选择学位' }]}
+                  trigger='onConfirm'
+                  onClick={(e, pickerRef) => {
+                    pickerRef.current?.open();
+                  }}
+                >
+                  <Picker columns={[allOptions.degree_options?.options || []]}>
+                    {(value) =>
+                      getPickerDisplayText(value, allOptions.degree_options?.options || [], '请选择学位', [
+                        'edu_info_list',
+                        String(index),
+                        'degree',
+                      ])
+                    }
+                  </Picker>
+                </Form.Item>
+              );
+            }}
           </Form.Item>
 
-          <Form.Item name={['edu_info_list', String(index), 'major']} label='专业'>
-            <Input placeholder='请输入专业' />
+          <Form.Item
+            noStyle
+            shouldUpdate={(prevValues, curValues) => prevValues.edu_info_list !== curValues.edu_info_list}
+          >
+            {({ getFieldValue }) => {
+              return Number(getFieldValue('edu_info_list')?.[index]?.education?.[0]) > 2 ? (
+                <Form.Item
+                  name={['edu_info_list', String(index), 'major']}
+                  label='专业'
+                  rules={[{ required: true, message: '请输入专业' }]}
+                >
+                  <Input placeholder='请输入专业' />
+                </Form.Item>
+              ) : (
+                <Form.Item
+                  name={['edu_info_list', String(index), 'major']}
+                  label='专业'
+                  rules={[{ required: false, message: '请输入专业' }]}
+                >
+                  <Input placeholder='请输入专业' />
+                </Form.Item>
+              );
+            }}
           </Form.Item>
 
           <Form.Item
             name={['edu_info_list', String(index), 'graduate_date']}
             label='毕业时间'
+            rules={[{ required: true, message: '请选择毕业时间' }]}
             trigger='onConfirm'
             onClick={(e, datePickerRef) => {
               datePickerRef.current?.open();
@@ -195,19 +248,37 @@ const EducationInfo: React.FC<TabProps> = ({ form, allOptions }) => {
           <Form.Item
             name='graduated_attach_file'
             label='毕业证'
-            rules={[{ required: false, message: '请上传毕业证' }]}
+            rules={[{ required: true, message: '请上传毕业证' }]}
             extra='支持jpg、png格式，大小不超过10M'
           >
             <ImageUploader upload={handleUpload} maxCount={1} accept='image/*' />
           </Form.Item>
 
           <Form.Item
-            name='degree_attach_file'
-            label='学位证'
-            rules={[{ required: false, message: '请上传学位证' }]}
-            extra='支持jpg、png格式，大小不超过10M'
+            noStyle
+            shouldUpdate={(prevValues, curValues) => prevValues.edu_info_list !== curValues.edu_info_list}
           >
-            <ImageUploader upload={handleUpload} maxCount={1} accept='image/*' />
+            {({ getFieldValue }) => {
+              return Number(getFieldValue('edu_info_list')?.[index]?.education?.[0]) > 4 ? (
+                <Form.Item
+                  name='degree_attach_file'
+                  label='学位证'
+                  rules={[{ required: true, message: '请上传学位证' }]}
+                  extra='支持jpg、png格式，大小不超过10M'
+                >
+                  <ImageUploader upload={handleUpload} maxCount={1} accept='image/*' />
+                </Form.Item>
+              ) : (
+                <Form.Item
+                  name='degree_attach_file'
+                  label='学位证'
+                  rules={[{ required: false, message: '请上传学位证' }]}
+                  extra='支持jpg、png格式，大小不超过10M'
+                >
+                  <ImageUploader upload={handleUpload} maxCount={1} accept='image/*' />
+                </Form.Item>
+              );
+            }}
           </Form.Item>
 
           <div className='flex justify-end mb-4'>

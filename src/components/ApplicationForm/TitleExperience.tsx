@@ -165,6 +165,7 @@ const TitleExperience: React.FC<TabProps> = ({ form, allOptions }) => {
           <Form.Item
             name={["pro_title_list", String(index), "attach_file"]}
             label="附件"
+            rules={[{ required: true, message: "请选择附件" }]}
           >
             <ImageUploader
               // value={getFileList(index)}

@@ -122,6 +122,7 @@ const HealthInfo: React.FC<TabProps> = ({ form, allOptions }) => {
       <Form.Item
         name={[FORM_SPACE, 'health_type']}
         label='健康状态'
+        rules={[{ required: true, message: '请选择健康状态' }]}
         trigger='onConfirm'
         onClick={(e, pickerRef) => {
           pickerRef.current?.open();
@@ -156,14 +157,14 @@ const HealthInfo: React.FC<TabProps> = ({ form, allOptions }) => {
             })) || []
           }
         >
-          {(items) => getPhysicalDisabilityDisplayText(items, 'physical_disability', '请选择残疾类型')}
+          {(items) => getPhysicalDisabilityDisplayText(items, 'physical_disability', '请选择残疾类型（如有，必填）')}
         </CascadePicker>
       </Form.Item>
 
       <Form.Item
         name={[FORM_SPACE, 'disability_file']}
         label='残疾证'
-        rules={[{ required: false, message: '请上传残疾证' }]}
+        rules={[{ required: false, message: '请上传残疾证（如有，必传）' }]}
         extra='支持jpg、png格式，大小不超过10M'
       >
         <ImageUploader upload={handleUpload} maxCount={1} accept='image/*' />
@@ -187,7 +188,7 @@ const HealthInfo: React.FC<TabProps> = ({ form, allOptions }) => {
           }
         >
           {(items) =>
-            getMilitaryDisabilityDisplayText(items, 'military_physical_disability', '请选择军人残疾类型')
+            getMilitaryDisabilityDisplayText(items, 'military_physical_disability', '请选择军人残疾类型（如有，必填）')
           }
         </CascadePicker>
       </Form.Item>
@@ -195,7 +196,7 @@ const HealthInfo: React.FC<TabProps> = ({ form, allOptions }) => {
       <Form.Item
         name={[FORM_SPACE, 'military_disability_file']}
         label='军人残疾证'
-        rules={[{ required: false, message: '请上传军人残疾证' }]}
+        rules={[{ required: false, message: '请上传军人残疾证（如有，必传）' }]}
         extra='支持jpg、png格式，大小不超过10M'
       >
         <ImageUploader upload={handleUpload} maxCount={1} accept='image/*' />

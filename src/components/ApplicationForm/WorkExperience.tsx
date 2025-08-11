@@ -83,6 +83,7 @@ const WorkExperience: React.FC<TabProps> = ({ form }) => {
           <Form.Item
             name={['workexp_info_list', String(index), 'end_date']}
             label='结束日期'
+            rules={[{ required: true, message: '请选择结束日期' }]}
             trigger='onConfirm'
             onClick={(e, datePickerRef) => {
               datePickerRef.current?.open();
@@ -95,8 +96,12 @@ const WorkExperience: React.FC<TabProps> = ({ form }) => {
             </DatePicker>
           </Form.Item>
 
-          <Form.Item name={['workexp_info_list', String(index), 'department']} label='部门'>
-            <Input placeholder='请输入部门' />
+          <Form.Item
+            name={['workexp_info_list', String(index), 'department']}
+            label='部门'
+            rules={[{ required: true, message: '请输入部门' }]}
+          >
+            <Input placeholder='请输入部门（站名）' />
           </Form.Item>
 
           <Form.Item name={['workexp_info_list', String(index), 'position']} label='职位'>
