@@ -138,11 +138,7 @@ const LegalInfo: React.FC<TabProps> = ({ form, allOptions }) => {
         </Radio.Group>
       </Form.Item>
 
-      <Form.Item
-        name={[FORM_SPACE, 'attach_file']}
-        label='附件'
-        rules={[{ required: true, message: '请上传附件' }]}
-      >
+      <Form.Item name={[FORM_SPACE, 'attach_file']} label='附件'>
         <ImageUploader
           // value={getFileList(index)}
           upload={handleUpload}
@@ -152,6 +148,19 @@ const LegalInfo: React.FC<TabProps> = ({ form, allOptions }) => {
       </Form.Item>
 
       {toggleRecord && <CriminalRecord form={form} allOptions={allOptions} />}
+
+      <Form.Item
+        name={[FORM_SPACE, 'credit_report，']}
+        label='征信记录'
+        rules={[{ required: true, message: '请上传征信记录' }]}
+      >
+        <ImageUploader
+          // value={getFileList(index)}
+          upload={handleUpload}
+          maxCount={1}
+          accept='image/*,.pdf'
+        />
+      </Form.Item>
 
       <div className='adm-list-item'>
         <h4 className='font-medium' style={{ fontSize: '15px' }}>

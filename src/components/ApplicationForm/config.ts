@@ -7,7 +7,7 @@ import SkillInfo from './SkillInfo';
 import OtherInfo from './OtherInfo';
 import HealthInfo from './HealthInfo';
 import LegalInfo from './LegalInfo';
-import TitleExperience from './TitleExperience'
+import TitleExperience from './TitleExperience';
 import { TabConfig } from './types';
 
 export const tabConfigs: TabConfig[] = [
@@ -29,6 +29,13 @@ export const tabConfigs: TabConfig[] = [
       'join_party_date',
       'marital_status',
       'is_veteran',
+      'deposit_bank',
+      'bank_account',
+      'id_type',
+      'gas_station_name',
+      'skill_level',
+      'job_title_type',
+      'job_title_level',
       'physical_disability',
     ],
   },

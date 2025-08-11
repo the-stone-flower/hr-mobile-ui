@@ -38,7 +38,7 @@ export function filterNullValues(obj: any) {
     }
 
     // 处理基础信息中的选择器
-    if (['nation', 'political', 'marital_status', 'employment', 'degree'].includes(key)) {
+    if (['nation', 'political', 'marital_status', 'employment', 'degree', 'id_type', 'skill_level', 'job_title_level'].includes(key)) {
       result[key] = [value];
       return;
     }
@@ -194,6 +194,26 @@ export function filterNullValues(obj: any) {
 
           // 处理附件
           if (itemKey === 'attach_file') {
+            processedItem[itemKey] = itemValue ? [{ url: itemValue }] : [];
+            return;
+          }
+
+          // 其他字段直接赋值（如 title_desc）
+          processedItem[itemKey] = itemValue;
+        });
+        return processedItem;
+      });
+      return;
+    }
+
+    // 处理征信记录
+    if (key === 'legal_info' && Array.isArray(value)) {
+      result[key] = value.map((item) => {
+        const processedItem: any = {};
+        Object.entries(item).forEach(([itemKey, itemValue]: [any, any]) => {
+          if (!itemValue && itemValue !== false) return;
+          // 处理附件
+          if (itemKey === 'attach_file' || itemKey === 'credit_report') {
             processedItem[itemKey] = itemValue ? [{ url: itemValue }] : [];
             return;
           }
