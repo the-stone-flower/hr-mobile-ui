@@ -207,24 +207,26 @@ export function filterNullValues(obj: any) {
     }
 
     // 处理征信记录
-    if (key === 'legal_info' && Array.isArray(value)) {
-      result[key] = value.map((item) => {
-        const processedItem: any = {};
-        Object.entries(item).forEach(([itemKey, itemValue]: [any, any]) => {
-          if (!itemValue && itemValue !== false) return;
-          // 处理附件
-          if (itemKey === 'attach_file' || itemKey === 'credit_report') {
-            processedItem[itemKey] = itemValue ? [{ url: itemValue }] : [];
-            return;
-          }
+    // if (key === 'legal_info' || key === 'health_info') {
+    //   debugger
+    //   result[key] = value.map((item) => {
+    //     const processedItem: any = {};
+    //     Object.entries(item).forEach(([itemKey, itemValue]: [any, any]) => {
+    //       // if (!itemValue && itemValue !== false) return;
+    //       debugger
+    //       // 处理附件
+    //       if (itemKey === 'attach_file' || itemKey === 'credit_report') {
+    //         processedItem[itemKey] = itemValue ? [{ url: itemValue }] : [];
+    //         return;
+    //       }
 
-          // 其他字段直接赋值（如 title_desc）
-          processedItem[itemKey] = itemValue;
-        });
-        return processedItem;
-      });
-      return;
-    }
+    //       // 其他字段直接赋值（如 title_desc）
+    //       processedItem[itemKey] = itemValue;
+    //     });
+    //     return processedItem;
+    //   });
+    //   return;
+    // }
 
     // 处理其他非空值
     if (value !== null && value !== undefined && value !== '') {

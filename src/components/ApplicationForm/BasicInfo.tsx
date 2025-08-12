@@ -26,7 +26,6 @@ interface PickerOption {
 
 const BasicInfo: React.FC<TabProps> = ({ form, allOptions, onIdNumberChange }) => {
   const dispatch = useAppDispatch();
-  const [showMilitaryFile, setShowMilitaryFile] = useState(true);
   const [areaCount, setAreaCount] = useState(1);
   const [salaryRange, setSalaryRange] = useState<number[]>([]);
   const areaData = allOptions?.work_place_options?.options || [];
@@ -471,11 +470,7 @@ const BasicInfo: React.FC<TabProps> = ({ form, allOptions, onIdNumberChange }) =
         label='是否退役军人'
         rules={[{ required: true, message: '请选择是否退役军人' }]}
       >
-        <Radio.Group
-          onChange={(value) => {
-            setShowMilitaryFile(value === 'true' ? true : false);
-          }}
-        >
+        <Radio.Group>
           <Radio value='true' className='mt-2'>
             是
           </Radio>
@@ -485,16 +480,23 @@ const BasicInfo: React.FC<TabProps> = ({ form, allOptions, onIdNumberChange }) =
         </Radio.Group>
       </Form.Item>
 
-      {showMilitaryFile && (
-        <Form.Item
-          name='discharge_military_file'
-          label='退伍证'
-          rules={[{ required: true, message: '请上传退伍证' }]}
-          extra='支持jpg、png格式，大小不超过10M'
-        >
-          <ImageUploader upload={handleUpload} maxCount={1} accept='image/*' />
-        </Form.Item>
-      )}
+      <Form.Item
+        noStyle
+        shouldUpdate={(prevValues, curValues) => prevValues.is_veteran !== curValues.is_veteran}
+      >
+        {({ getFieldValue }) =>
+          getFieldValue('is_veteran') === 'true' ? (
+            <Form.Item
+              name='discharge_military_file'
+              label='退伍证'
+              rules={[{ required: true, message: '请上传退伍证' }]}
+              extra='支持jpg、png格式，大小不超过10M'
+            >
+              <ImageUploader upload={handleUpload} maxCount={1} accept='image/*' />
+            </Form.Item>
+          ) : null
+        }
+      </Form.Item>
 
       <Form.Item
         name={['recruit_info', 'salary_range']}
