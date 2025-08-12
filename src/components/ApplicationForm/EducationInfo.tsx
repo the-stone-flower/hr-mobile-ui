@@ -159,7 +159,7 @@ const EducationInfo: React.FC<TabProps> = ({ form, allOptions }) => {
             shouldUpdate={(prevValues, curValues) => prevValues.edu_info_list !== curValues.edu_info_list}
           >
             {({ getFieldValue }) => {
-              console.log(getFieldValue('edu_info_list')?.[index]?.education?.[0])
+              console.log(getFieldValue('edu_info_list')?.[index]?.education?.[0]);
               return Number(getFieldValue('edu_info_list')?.[index]?.education?.[0]) > 4 ? (
                 <Form.Item
                   name={['edu_info_list', String(index), 'degree']}
@@ -246,7 +246,7 @@ const EducationInfo: React.FC<TabProps> = ({ form, allOptions }) => {
           </Form.Item>
 
           <Form.Item
-            name='graduated_attach_file'
+            name={['edu_info_list', String(index), 'graduated_attach_file']}
             label='毕业证'
             rules={[{ required: true, message: '请上传毕业证' }]}
             extra='支持jpg、png格式，大小不超过10M'
@@ -261,7 +261,7 @@ const EducationInfo: React.FC<TabProps> = ({ form, allOptions }) => {
             {({ getFieldValue }) => {
               return Number(getFieldValue('edu_info_list')?.[index]?.education?.[0]) > 4 ? (
                 <Form.Item
-                  name='degree_attach_file'
+                  name={['edu_info_list', String(index), 'degree_attach_file']}
                   label='学位证'
                   rules={[{ required: true, message: '请上传学位证' }]}
                   extra='支持jpg、png格式，大小不超过10M'
@@ -270,7 +270,7 @@ const EducationInfo: React.FC<TabProps> = ({ form, allOptions }) => {
                 </Form.Item>
               ) : (
                 <Form.Item
-                  name='degree_attach_file'
+                  name={['edu_info_list', String(index), 'degree_attach_file']}
                   label='学位证'
                   rules={[{ required: false, message: '请上传学位证' }]}
                   extra='支持jpg、png格式，大小不超过10M'
